@@ -21,13 +21,13 @@ const connect = (mapStateToProps) => (Component) => (ownProps) => {
     let values = [];
 
     for (const oKey of ownPropsKeys) {
-        const value = ownPropsKeys[oKey];
+        const value = ownProps[oKey];
         readyProps[oKey] = value;
         values.push(readyProps[oKey]);
     }
 
     for (const oKey of connectPropsKeys) {
-        const value = connectPropsKeys[oKey];
+        const value = connectProps[oKey];
         // Execute lazy functions so they can use React.useCallback.
         readyProps[oKey] = isFunction(value) ? value() : value;
         values.push(readyProps[oKey]);
