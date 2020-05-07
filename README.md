@@ -168,6 +168,8 @@ setContext('mystate.count', 5);
 // setContext('newValue.nested.path.value', 5);
 ```
 
+(We can even compare objects by referental equality (===) in`lodash/fp` since updates break the reference in the changed object upto the upper parent reference, so we can distinguish changes in each level without having to do expensive diffing.)
+
 ## effects Option
 
 There are two other major principles of `react-fp-context` - the handling of effects and derived states.
