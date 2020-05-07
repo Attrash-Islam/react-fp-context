@@ -23,9 +23,17 @@ npm i react-fp-context --save
 | **derivedStateSyncers?** | A list of derived state syncers | *[]*
 | **debug?** | Debug mode to trace state updates in the console | *false*
 
+## Important Notice
+
+React Context and useContext is often used to avoid prop drilling, however it's known that there's a performance issue. When a context value is changed, **all components that useContext** will re-render even those who consume a slice of the context that didn't changed. (react-redux maintainers have talked about this pain [in a big discussion](https://github.com/reduxjs/react-redux/issues/1177)).
+
+React team have talked about introducing something called [Context Selectors](https://github.com/reactjs/rfcs/pull/119) to solve this issue where component only re-render if and only if the selector returns a different value of that slice. Unfortunately, this is something that will need a refactor in React infrastructure and a multi-month project.
+
+If you care about performance (or manage a big app) then it's encouraged to use the `connect` HOC instead of using the `useContext` directly. Once the Context Selector proposal land the whole API will be redesigned in order to utilize hooks as another way of doing things while keeping the connect for those who likes to use HOC.
+
 ## Usage
 
-This library exposes only one thing: a ContextProvider-like HOC that can be passed configurations & the Root component we have in our app.
+This library exposes a ContextProvider-like HOC that can be passed configurations & the Root component we have in our app.
 
 As an example, let's use a standard Counter application where we can increment/decrement a counter whilst the value is being displayed.
 
@@ -304,8 +312,42 @@ You can debug and trace your state updates by passing this option as `true`. Onc
 
 ![image](https://user-images.githubusercontent.com/7091543/80594046-f6143380-8a2a-11ea-86ea-222984922cd7.png)
 
-One of the derived states we like is related to using the [`fiverr/passable`](https://github.com/fiverr/passable) package (please check out this adorable validation package!) to validate our state. 
+## connect Usage
+In the `connect` way, all what we did in the Provider stays the same (including all the options), what is different in the `connect` way is that we do not consume context by using `useContext` directly but by using a redux-like way.
 
-We use the `initialPropsMapper` to scope our state below `mystate` which results in all our updates belonging to the `mystate` namespace. In our derived state syncer we then only need to know if the reference to `mystate` has been broken (changed) and if so then execute the validations again with passing the state.
+```js
+const Controls = ({ onAddition, onDecrement, consoleLog }) => {
+    return (
+        <>
+            <div className="controls">
+                <div className="control" onClick={onAddition}>+</div>
+                <div className="control" onClick={onDecrement}>-</div>
+            </div>
+            <h4 onClick={consoleLog}>Alert other state value</h4>
+        </>
+    )
+};
 
-(We don't have to care where and how it got changed since `lodash/fp` breaks the upper parent reference to the change, so we can distinguish changes in upper levels without having to go into the details.)
+// Unlike react-redux connect: MapStateToProps here supply the data and the functions.
+// So we don't have the concept of mapDispatchToProps.
+const mapStateToProps = ({ context, setContext }) => ({
+    count: context.count,
+    onAddition: () =>
+        // eslint-disable-next-line
+        React.useCallback(() => {
+            setContext('count', (count) => count + 1)
+        }, []),
+    onDecrement: () =>
+        // eslint-disable-next-line
+        React.useCallback(() => {
+            setContext('count', (count) => count - 1)
+        }, []),
+    consoleLog: () =>
+        // eslint-disable-next-line
+        React.useCallback(() => alert(context.countx), [context.countx])
+});
+
+export default connect(mapStateToProps)(Controls);
+```
+
+Pay attention that all the inline functions should be wrapped into a function that returns `React.useCallback` so we can take the benefit of `useMemo` that we use in order to not render unnecessary components.
