@@ -1,3 +1,5 @@
-import ContextProvider from './ContextProvider';
+import ReactFpContext from './ContextProvider';
+import connect from './connect';
 
-export default ContextProvider;
+export default ReactFpContext;
+export { connect };

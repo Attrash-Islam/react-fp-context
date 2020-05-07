@@ -2,6 +2,8 @@ import React from 'react';
 import identity from 'lodash/identity';
 import useStateManagement from './useStateManagement';
 
+export const TreeContext = React.createContext();
+
 const ContextProvider = ({
     Context,
     initialPropsMapper = identity,
@@ -14,9 +16,11 @@ const ContextProvider = ({
     effects.forEach((effect) => effect({ context, setContext }));
 
     return (
-        <Context.Provider value={{ context, setContext }}>
-            <Component {...props}/>
-        </Context.Provider>
+        <TreeContext.Provider value={Context}>
+            <Context.Provider value={{ context, setContext }}>
+                <Component {...props}/>
+            </Context.Provider>
+        </TreeContext.Provider>
     );
 };
 
