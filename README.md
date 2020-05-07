@@ -354,4 +354,4 @@ const mapStateToProps = ({ context, setContext }, _ownProps) => ({
 export default connect(mapStateToProps)(Controls);
 ```
 
-Pay attention that all the inline functions should be wrapped into a function that returns `React.useCallback` so we can take the benefit of `useMemo` that we use in order to not render unnecessary components.
+Pay attention that all the inline functions should be wrapped into a function that returns `React.useCallback` so we can take the benefit of `useMemo` that we use in order to not re-render unnecessary components.
