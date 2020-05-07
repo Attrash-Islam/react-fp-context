@@ -345,6 +345,8 @@ const mapStateToProps = ({ context, setContext }, _ownProps) => ({
             setContext('count', (count) => count - 1)
         }, []),
     consoleLog: () =>
+        // Note: Make sure you manage your useCallback deps since hook-rules can't work here.
+        // This thing is temporary and once Context Selector lands this approach will be deprecated.
         // eslint-disable-next-line
         React.useCallback(() => alert(context.countx), [context.countx])
 });
