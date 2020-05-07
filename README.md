@@ -318,6 +318,8 @@ You can debug and trace your state updates by passing this option as `true`. Onc
 In the `connect` way, all what we did in the Provider stays the same (including all the options), what is different in the `connect` way is that we do not consume context by using `useContext` directly but by using a redux-like way.
 
 ```js
+import { connect } from 'react-fp-context';
+
 const Controls = ({ onAddition, onDecrement, consoleLog }) => {
     return (
         <>
