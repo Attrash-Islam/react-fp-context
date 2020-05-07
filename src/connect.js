@@ -1,7 +1,7 @@
 import React from 'react';
 import sortBy from 'lodash/fp/sortBy';
 import isFunction from 'lodash/fp/isFunction';
-import identity from 'lodash/identity';
+import identity from 'lodash/fp/identity';
 import { TreeContext } from './ContextProvider';
 
 const connect = (mapStateToProps) => (Component) => () => {

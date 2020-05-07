@@ -5,7 +5,7 @@ module.exports = {
       libraryTarget: 'umd'
     },
     externals : [
-      'lodash/identity',
+      'lodash/fp/identity',
       'lodash/fp/set',
       'lodash/fp/update',
       'lodash/fp/isFunction',
