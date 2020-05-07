@@ -332,7 +332,7 @@ const Controls = ({ onAddition, onDecrement, consoleLog }) => {
 
 // Unlike react-redux connect: MapStateToProps here supply the data and the functions.
 // So we don't have the concept of mapDispatchToProps.
-const mapStateToProps = ({ context, setContext }) => ({
+const mapStateToProps = ({ context, setContext }, _ownProps) => ({
     count: context.count,
     onAddition: () =>
         // eslint-disable-next-line

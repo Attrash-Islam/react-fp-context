@@ -4,30 +4,38 @@ import isFunction from 'lodash/fp/isFunction';
 import identity from 'lodash/fp/identity';
 import { TreeContext } from './ContextProvider';
 
-const connect = (mapStateToProps) => (Component) => () => {
+const connect = (mapStateToProps) => (Component) => (ownProps) => {
     const Context = React.useContext(TreeContext);
     const { context, setContext } = React.useContext(Context);
-    const props = mapStateToProps({ context, setContext });
+    const connectProps = mapStateToProps({ context, setContext }, ownProps);
 
-    // to preserve stable sort.
-    const propsKeys = sortBy(identity, Object.keys(props));
+    // to preserve stable sort so useCallback and useMemo can work as expected.
+    // useMemo deps sort is important to do the check and objects are not
+    // guaranteed to be sorted as expected and because of that we use lodash `sortBy` stable sort.
+    // and useCallback should execute as a hook in a stable order (the thing that hooks depends on).
+    const sortByIdentity = sortBy(identity);
+    const connectPropsKeys = sortByIdentity(Object.keys(connectProps));
+    const ownPropsKeys = sortByIdentity(Object.keys(ownProps));
 
-    // Execute lazy functions so they can use React.useCallback.
-    const readyProps = propsKeys.reduce((acc, key) => {
-        let newAcc;
+    let readyProps = {};
+    let values = [];
 
-        if (isFunction(props[key])) {
-            newAcc = { ...acc, [key]: props[key]() };
-        } else {
-            newAcc = { ...acc, [key]: props[key] };
-        }
+    for (const oKey of ownPropsKeys) {
+        const value = ownPropsKeys[oKey];
+        readyProps[oKey] = value;
+        values.push(readyProps[oKey]);
+    }
 
-        return newAcc;
-    }, {});
+    for (const oKey of connectPropsKeys) {
+        const value = connectPropsKeys[oKey];
+        // Execute lazy functions so they can use React.useCallback.
+        readyProps[oKey] = isFunction(value) ? value() : value;
+        values.push(readyProps[oKey]);
+    }
 
     return React.useMemo(() => {
-        return (<Component {...readyProps}/>);
-    }, Object.values(readyProps)); // eslint-disable-line react-hooks/exhaustive-deps
+        return React.createElement(Component, readyProps);
+    }, values); // eslint-disable-line react-hooks/exhaustive-deps
 };
 
 export default connect;
