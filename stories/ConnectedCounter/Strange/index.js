@@ -2,18 +2,18 @@ import React from 'react';
 import CounterContext from '../context';
 
 const Strange = () => {
-    const { setContext } = React.useContext(CounterContext);
+    const { setContext, context } = React.useContext(CounterContext);
+    const { countx } = context;
 
     const onClick = () => {
-        setContext('countx', 'islam');
+        setContext('countx', 'id: ' + Math.random());
     };
 
     return (
         <button onClick={onClick}>
-            Update something else
+            Update some value that Table do not refer to - current: {countx}
         </button>
     )
-
 };
 
 export default Strange;

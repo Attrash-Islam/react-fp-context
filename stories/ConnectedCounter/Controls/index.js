@@ -3,8 +3,6 @@ import { connect } from '../../../src';
 import './style.scss';
 
 const Controls = ({ onAddition, onDecrement, consoleLog }) => {
-    console.log('Controls updated');
-
     return (
         <>
             <div className="controls">

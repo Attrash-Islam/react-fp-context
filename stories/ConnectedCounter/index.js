@@ -9,9 +9,9 @@ import './style.scss';
 const ConnectedCounter = () => {
     return (
         <div className="counter">
-            <Display/>
             <Controls/>
             <Strange/>
+            <Display/>
         </div>
     );
 };
