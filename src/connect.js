@@ -23,7 +23,7 @@ const connect = (mapStateToProps) => (Component) => (ownProps) => {
     for (const oKey of ownPropsKeys) {
         const value = ownProps[oKey];
         readyProps[oKey] = value;
-        values.push(readyProps[oKey]);
+        values.push(value);
     }
 
     for (const oKey of connectPropsKeys) {
