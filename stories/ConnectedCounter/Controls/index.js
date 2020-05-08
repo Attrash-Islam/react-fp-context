@@ -2,31 +2,31 @@ import React from 'react';
 import { connect } from '../../../src';
 import './style.scss';
 
-const Controls = ({ onAddition, onDecrement, consoleLog }) => {
+const Controls = ({ useAddition, useDecrement, useConsoleLog }) => {
     return (
         <>
             <div className="controls">
-                <div className="control" onClick={onAddition}>+</div>
-                <div className="control" onClick={onDecrement}>-</div>
+                <div className="control" onClick={useAddition}>+</div>
+                <div className="control" onClick={useDecrement}>-</div>
             </div>
-            <h4 onClick={consoleLog}>Alert other state value</h4>
+            <h4 onClick={useConsoleLog}>Alert other state value</h4>
         </>
     )
 };
 
 const mapStateToProps = ({ context, setContext }) => ({
-    onAddition: () =>
-        // eslint-disable-next-line
+    useAddition: () =>
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         React.useCallback(() => {
             setContext('count', (count) => count + 1)
         }, []),
-    onDecrement: () =>
-        // eslint-disable-next-line
+    useDecrement: () =>
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         React.useCallback(() => {
             setContext('count', (count) => count - 1)
         }, []),
-    consoleLog: () =>
-        // eslint-disable-next-line
+    useConsoleLog: () =>
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         React.useCallback(() => alert(context.countx), [context.countx])
 });
 

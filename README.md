@@ -318,37 +318,34 @@ You can debug and trace your state updates by passing this option as `true`. Onc
 In the `connect` way, all what we did in the Provider stays the same (including all the options), what is different in the `connect` way is that we do not consume context by using `useContext` directly but by using a redux-like way.
 
 ```js
-const Controls = ({ onAddition, onDecrement, consoleLog }) => {
+const Controls = ({ useAddition, useDecrement, useConsoleLog }) => {
     return (
         <>
             <div className="controls">
-                <div className="control" onClick={onAddition}>+</div>
-                <div className="control" onClick={onDecrement}>-</div>
+                <div className="control" onClick={useAddition}>+</div>
+                <div className="control" onClick={useDecrement}>-</div>
             </div>
-            <h4 onClick={consoleLog}>Alert other state value</h4>
+            <h4 onClick={useConsoleLog}>Alert other state value</h4>
         </>
     )
 };
 
 // Unlike react-redux connect: MapStateToProps here supply the data and the functions.
-// So we don't have the concept of mapDispatchToProps.
-const mapStateToProps = ({ context, setContext }, _ownProps) => ({
-    count: context.count,
-    onAddition: () =>
-        // eslint-disable-next-line
+// So we don't have the concept of mapDispatchToProps, but function should start with the prefix `use`.
+const mapStateToProps = ({ context, setContext }) => ({
+    useAddition: () =>
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         React.useCallback(() => {
             setContext('count', (count) => count + 1)
         }, []),
-    onDecrement: () =>
-        // eslint-disable-next-line
+    useDecrement: () =>
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         React.useCallback(() => {
             setContext('count', (count) => count - 1)
         }, []),
-    consoleLog: () =>
-        // Note: Make sure you manage your useCallback deps since hook-rules can't work here.
-        // This thing is temporary and once Context Selector lands this approach will be deprecated.
-        // eslint-disable-next-line
-        React.useCallback(() => alert(context.countx), [context.countx])
+    useConsoleLog: () =>
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        React.useCallback(() => alert(context.countx), [context.countx]) // You need to manage the deps manually for now.
 });
 
 export default connect(mapStateToProps)(Controls);
