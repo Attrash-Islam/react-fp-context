@@ -33,9 +33,8 @@ const connect = (mapStateToProps) => (Component) => (ownProps) => {
         values.push(readyProps[oKey]);
     }
 
-    return React.useMemo(() => {
-        return React.createElement(Component, readyProps);
-    }, values); // eslint-disable-line react-hooks/exhaustive-deps
+    return React.useMemo(() =>
+        React.createElement(Component, readyProps), values); // eslint-disable-line react-hooks/exhaustive-deps
 };
 
 export default connect;
