@@ -29,7 +29,7 @@ React Context and useContext is often used to avoid prop drilling, however it's 
 
 React team have talked about introducing something called [Context Selectors](https://github.com/reactjs/rfcs/pull/119) to solve this issue where component only re-render if and only if the selector returns a different value of that slice. Unfortunately, this is something that will need a refactor in React infrastructure and a multi-month project.
 
-If you care about performance (or manage a big app) then it's encouraged to use the `connect` HOC instead of using the `useContext` directly. Once the Context Selector proposal land the whole API will be redesigned in order to utilize hooks as another way of doing things while keeping the connect for those who likes to use HOC.
+If you care about performance (or manage a big app) then it's encouraged to use the `connect` HOC instead of using the `useContext` directly. Once the Context Selector proposal land the whole API will be redesigned.
 
 ## Usage
 
@@ -318,6 +318,8 @@ You can debug and trace your state updates by passing this option as `true`. Onc
 In the `connect` way, all what we did in the Provider stays the same (including all the options), what is different in the `connect` way is that we do not consume context by using `useContext` directly but by using a redux-like way.
 
 ```js
+import { connect } from 'react-fp-context';
+
 const Controls = ({ useAddition, useDecrement, useConsoleLog }) => {
     return (
         <>
@@ -351,4 +353,4 @@ const mapStateToProps = ({ context, setContext }) => ({
 export default connect(mapStateToProps)(Controls);
 ```
 
-Pay attention that all the inline functions should be wrapped into a function that returns `React.useCallback` so we can take the benefit of `useMemo` that we use in order to not render unnecessary components.
+Pay attention that all the inline functions should be wrapped into a function that returns `React.useCallback` so we can take the benefit of `useMemo` that we use in order to not re-render unnecessary components.
