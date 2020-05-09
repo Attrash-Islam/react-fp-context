@@ -10,7 +10,6 @@ module.exports = {
       'lodash/fp/update',
       'lodash/fp/isFunction',
       'lodash/fp/sortBy',
-      'lodash/fp/difference',
       {
         react: {
             root: 'React',

@@ -1,27 +1,26 @@
 import React from 'react';
-import difference from 'lodash/fp/difference';
 import { TreeContext } from './ContextProvider';
-import connectMemoBuilder from './connectMemoBuilder';
+import buildProps from './buildProps';
+import isPropsIdentical from './isPropsIdentical';
 
 const connect = (mapStateToProps) => (Component) => (ownProps) => {
-    const memo = React.useRef({ lastValues: [], forceUpdate: 0 });
+    const memo = React.useRef({ props: {}, forceUpdate: 0 });
     const Context = React.useContext(TreeContext);
     const { context, setContext } = React.useContext(Context);
     const connectProps = mapStateToProps({ context, setContext }, ownProps);
 
-    const {
-        readyProps,
-        valuesToMemo
-    } = connectMemoBuilder(connectProps, ownProps);
+    // Merge connect props with ownProps and execute connect functions in sorted order for useCallback hooks.
+    const props = buildProps(connectProps, ownProps);
 
-    if(difference(valuesToMemo, memo.current.lastValues).length !== 0) {
+    // Check if the props is not identical to the memomized props in order to force update
+    // and to update the memo to recent props.
+    if (!isPropsIdentical(props, memo.current.props)) {
+        memo.current.props = props;
         memo.current.forceUpdate++;
     }
 
-    memo.current.lastValues = valuesToMemo;
-    
     return React.useMemo(() =>
-        React.createElement(Component, readyProps), [memo.current.forceUpdate]); // eslint-disable-line react-hooks/exhaustive-deps
+        React.createElement(Component, props), [memo.current.forceUpdate]); // eslint-disable-line react-hooks/exhaustive-deps
 };
 
 export default connect;
