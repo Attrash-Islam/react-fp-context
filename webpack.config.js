@@ -9,7 +9,6 @@ module.exports = {
       'lodash/fp/set',
       'lodash/fp/update',
       'lodash/fp/isFunction',
-      'lodash/fp/sortBy',
       {
         react: {
             root: 'React',
