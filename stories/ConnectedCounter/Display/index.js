@@ -29,8 +29,8 @@ const Display = ({ count }) => {
     )
 };
 
-const mapStateToProps = ({ context }) => ({
+const useStateToProps = ({ context }) => ({
     count: context.count
 });
 
-export default connect(mapStateToProps)(Display);
+export default connect(useStateToProps)(Display);

@@ -332,25 +332,30 @@ const Controls = ({ useAddition, useDecrement, useConsoleLog }) => {
     )
 };
 
-// Unlike react-redux connect: MapStateToProps here supply the data and the functions.
-// So we don't have the concept of mapDispatchToProps, but function should start with the prefix `use`.
-const mapStateToProps = ({ context, setContext }) => ({
-    useAddition: () =>
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        React.useCallback(() => {
-            setContext('count', (count) => count + 1)
-        }, []),
-    useDecrement: () =>
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        React.useCallback(() => {
-            setContext('count', (count) => count - 1)
-        }, []),
-    useConsoleLog: () =>
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        React.useCallback(() => alert(context.countx), [context.countx]) // You need to manage the deps manually for now.
-});
+// Unlike react-redux connect: useStateToProps here supply the data and the functions.
+// So we don't have the concept of mapDispatchToProps, but functions MUST be wrapped with React.useCallback.
+const useStateToProps = ({ context, setContext }) => {
 
-export default connect(mapStateToProps)(Controls);
+    const onAddition = React.useCallback(() => {
+        setContext('count', (count) => count + 1)
+    }, [setContext]);
+
+    const onDecrement = React.useCallback(() => {
+        setContext('count', (count) => count - 1)
+    }, [setContext]);
+
+    const onConsole = React.useCallback(() => {
+        alert(context.countx);
+    }, [context.countx]);
+
+    return {
+        onAddition,
+        onDecrement,
+        onConsole
+    }
+};
+
+export default connect(useStateToProps)(Controls);
 ```
 
 Pay attention that all the inline functions should be wrapped into a function that returns `React.useCallback` so we can take the benefit of `useMemo` that we use in order to not re-render unnecessary components.
