@@ -358,4 +358,4 @@ const useStateToProps = ({ context, setContext }) => {
 export default connect(useStateToProps)(Controls);
 ```
 
-Pay attention that all the inline functions should be wrapped into a function that returns `React.useCallback` so we can take the benefit of `useMemo` that we use in order to not re-render unnecessary components.
+Pay attention that all the inline functions should be wrapped with `React.useCallback` so we can take the benefit of `useMemo` that we use in order to not re-render unnecessary components, without this inline function will get reference on each render and our `connect` can't do the performance optimization.

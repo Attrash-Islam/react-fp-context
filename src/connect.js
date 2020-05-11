@@ -9,7 +9,7 @@ const connect = (useStateToProps) => (Component) => (ownProps) => {
     const { context, setContext } = React.useContext(Context);
     const connectProps = useStateToProps({ context, setContext }, ownProps);
 
-    // Merge connect props with ownProps and execute connect functions in sorted order for useCallback hooks.
+    // Merge connect props with ownProps.
     const props = Object.assign({}, ownProps, connectProps);
 
     // Check if the props is not identical to the memomized props in order to force update
