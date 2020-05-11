@@ -6,6 +6,11 @@ import isPropsIdentical from './isPropsIdentical';
 const connect = (useStateToProps) => (Component) => (ownProps) => {
     const memo = React.useRef({ props: {}, forceUpdate: 0 });
     const Context = React.useContext(TreeContext);
+
+    if (!Context) {
+        throw new Error('Are you trying to use ReactFpContext\'s connect() without a Provider?');
+    }
+
     const { context, setContext } = React.useContext(Context);
     const connectProps = useStateToProps({ context, setContext }, ownProps);
 
