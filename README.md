@@ -116,19 +116,22 @@ const Controls = ({ onAddition, onDecrement }) => {
     )
 };
 
-const useStateToProps = ({ setContext }) => {
+const useStateToProps = ({ context, setContext }) => {
+    const { count } = context;
+
     // It's recommended to build the functions with preserving the order
     // and not by immediate inject into the object to React.useCallback can work as expected.
     // NOTE: All the inline functions MUST be wrapped with React.useCallback,
     // so we can take the benefit of `useMemo` that we use in order to not re-render unnecessary components.
     // without this, inline function will get reference on each render and our `connect` can't do the performance optimization
     const onAddition = React.useCallback(() => {
-        setContext('count', (count) => count + 1);
-    }, [setContext]);
+        // We can also use updater function: setContext('count', (count) => count + 1)
+        setContext('count', count + 1);
+    }, [setContext, count]);
 
     const onDecrement = React.useCallback(() => {
-        setContext('count', (count) => count - 1);
-    }, [setContext]);
+        setContext('count', count + 1);
+    }, [setContext, count]);
 
     return {
         onAddition,
