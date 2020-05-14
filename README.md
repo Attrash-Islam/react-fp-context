@@ -116,7 +116,7 @@ const Controls = ({ onAddition, onDecrement }) => {
     )
 };
 
-const useStateToProps = ({ context }) => {
+const useStateToProps = ({ setContext }) => {
     // It's recommended to build the functions with preserving the order
     // and not by immediate inject into the object to React.useCallback can work as expected.
     // NOTE: All the inline functions MUST be wrapped with React.useCallback,
