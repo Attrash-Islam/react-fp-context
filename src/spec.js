@@ -9,13 +9,13 @@ import ReactFpContextProvider from '.';
 configure({ adapter: new Adapter() });
 
 let currentContext;
-let currentsetContext;
+let currentSetContext;
 
 const Context = React.createContext();
 
 const ContextInspector = ({ context, setContext }) => {
     currentContext = context;
-    currentsetContext = setContext;
+    currentSetContext = setContext;
 
     return null;
 };
@@ -26,7 +26,7 @@ const App = (options) => ReactFpContextProvider(options)(() => <ConnectedContext
 
 beforeEach(() => {
     currentContext = null;
-    currentsetContext = null;
+    currentSetContext = null;
 });
 
 it('should build initial context value based on initial props', () => {
@@ -36,4 +36,4 @@ it('should build initial context value based on initial props', () => {
     expect(currentContext).toEqual({ count: 1, name: 'islam' });
 });
 
-console.log(currentsetContext);
+console.log(currentSetContext);
