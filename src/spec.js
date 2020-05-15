@@ -1,4 +1,5 @@
 import React from 'react';
+import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
 import identity from 'lodash/fp/identity';
 import { configure } from 'enzyme';
@@ -24,7 +25,7 @@ const ContextInspector = ({ context, setContext }) => {
 
 const ConnectedContextInspector = connect(identity)(ContextInspector);
 
-const App = (options) => ReactFpContextProvider(options)(() => <ConnectedContextInspector/>);
+const App = (options) => ReactFpContextProvider(options)(ConnectedContextInspector);
 
 beforeEach(() => {
     currentContext = null;
@@ -43,7 +44,9 @@ it('should update context value when calling setContext with a value for a speci
     const Spec = App({ Context });
     mount(<Spec count={1} name="islam"/>);
 
-    currentSetContext('count', 2);
+    act(() => {
+        currentSetContext('count', 2);
+    });
 
     expect(currentContext).toEqual({ count: 2, name: 'islam' });
 });
@@ -52,7 +55,9 @@ it('should update context value when calling functional setContext for a specifi
     const Spec = App({ Context });
     mount(<Spec count={1} name="islam"/>);
 
-    currentSetContext('count', (count) => count + 1);
+    act(() => {
+        currentSetContext('count', (count) => count + 1);
+    });
 
     expect(currentContext).toEqual({ count: 2, name: 'islam' });
 });
@@ -78,7 +83,68 @@ it('should derive state value if derivedStateSyncers get passed with one render 
     expect(renderedTimes).toBe(1);
     expect(currentContext).toEqual({ count: 0, color: 'blue' });
 
-    currentSetContext('count', 3);
+    act(() => {
+        currentSetContext('count', 3);
+    });
+
     expect(renderedTimes).toBe(2);
     expect(currentContext).toEqual({ count: 3, color: 'red' });
+});
+
+it('should execute effects when get passed on each update', () => {
+    const fun = jest.fn();
+
+    const Spec = App({ Context, effects: [fun] });
+    mount(<Spec count={0}/>);
+    expect(fun).toHaveBeenCalledWith({ context: currentContext, setContext: currentSetContext });
+
+    act(() => {
+        currentSetContext('count', 4);
+    });
+
+    expect(fun).toHaveBeenCalledWith({ context: currentContext, setContext: currentSetContext });
+});
+
+it('should not re-render when connect state slice do not change', () => {
+    const ContextInspector = ({ count, setContext }) => {
+        currentSetContext = setContext;
+        renderedTimes++;
+    
+        return count;
+    };
+
+    const ConnectedContextInspector = connect(({ context: { count }, setContext }) => ({ count, setContext }))(ContextInspector);
+    const Spec = ReactFpContextProvider({ Context })(ConnectedContextInspector);
+
+    mount(<Spec count={0}/>);
+    expect(renderedTimes).toBe(1);
+    act(() => {
+        currentSetContext('count', (count) => count + 1);
+    });
+
+    expect(renderedTimes).toBe(2);
+
+    act(() => {
+        currentSetContext('color', 'purple');
+    });
+
+    expect(renderedTimes).toBe(2); // Do not re-render
+});
+
+it('should throw error when using connect without Provider', () => {
+    const ContextInspector = ({ count, setContext }) => {
+        currentSetContext = setContext;
+        renderedTimes++;
+    
+        return count;
+    };
+
+    const ConnectedContextInspector = connect(({ context: { count }, setContext }) => ({ count, setContext }))(ContextInspector);
+
+    try {
+        mount(<ConnectedContextInspector count={0}/>);
+        expect(true).toBe(false); // Test should fail if render is passing without error.
+    } catch (e) {
+        expect(e.message).toBe('Are you trying to use ReactFpContext\'s connect() without a Provider?');
+    }
 });
