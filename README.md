@@ -119,13 +119,10 @@ const Controls = ({ onAddition, onDecrement }) => {
 const useStateToProps = ({ context, setContext }) => {
     const { count } = context;
 
-    // It's recommended to build the functions with preserving the order
-    // and not by immediate inject into the object to React.useCallback can work as expected.
     // NOTE: All the inline functions MUST be wrapped with React.useCallback,
     // so we can take the benefit of `useMemo` that we use in order to not re-render unnecessary components.
     // without this, inline function will get reference on each render and our `connect` can't do the performance optimization
     const onAddition = React.useCallback(() => {
-        // We can also use updater function: setContext('count', (count) => count + 1)
         setContext('count', count + 1);
     }, [setContext, count]);
 
@@ -142,7 +139,17 @@ const useStateToProps = ({ context, setContext }) => {
 export default connect(useStateToProps)(Controls);
 ```
 
-**Please note:** Multiple `setContext` calls will be batched based on React.setState batching whilst having only one render phase.
+**Please note:** Multiple `setContext` calls will be batched based on React.setState batching whilst having only one render phase. Also, `setContext` is using the `lodash/fp#set` and `lodash/fp#update` methods under the hood which means that you can update nested paths and arrays easily.
+
+```js
+    // create complex path that do not exist.
+    setContext('new.path.that.not.exist', 5);
+    // { new: { path: { that: { not: { exist: 5 } } } } }
+
+    // add new member to nested members array.
+    setContext('add.member.to.members', (members) => members.concat({ name: 'test' }));
+    // { add: { member: { to: { members: [{ name: 'myself' }, { name: 'test' }] } } } }
+```
 
 Up until now, we can see that the Context we passed into the options of the library has wrapped the values of the Root props and we can inspect the state by extracting `{ context }` and update it by extracting `{ setContext }`.
 
@@ -171,16 +178,6 @@ export default ReactFpContextProvider({
 ```
 
 If you console log your Context, you'll see that it now received the new shape.
-
-Updating nested paths is also easy seeing that `react-fp-context` is using `lodash/fp` API under the hood:
-
-```js
-setContext('mystate.count', 5);
-
-// you can also create new paths that doesn't exist into your state exactly as we do it in lodash/fp:
-// setContext('newValue', 5);
-// setContext('newValue.nested.path.value', 5);
-```
 
 (We can even compare objects by referental equality (===) in`lodash/fp` since updates break the reference in the changed object upto the upper parent reference, so we can distinguish changes in each level without having to do expensive diffing.)
 
