@@ -1,23 +1,8 @@
 import React from 'react';
-import CounterContext from '../context';
+import { connect } from '../../../src';
 import './style.scss';
 
-const Controls = () => {
-    const { setContext } = React.useContext(CounterContext);
-
-    const onAddition = () => {
-        setContext('count', (count) => count + 1);
-
-        // We can also do it as so:
-        // const { context, setContext } = React.useContext(CounterContext);
-        // const { count } = context;
-        // setContext('count', count + 1);
-    };
-
-    const onDecrement = () => {
-        setContext('count', (count) => count - 1);
-    };
-
+const Controls = ({ onAddition, onDecrement }) => {
     return (
         <div className="controls">
             <div className="control" onClick={onAddition}>+</div>
@@ -26,4 +11,20 @@ const Controls = () => {
     )
 };
 
-export default Controls;
+const useStateToProps = ({ setContext }) => {
+    const onAddition = React.useCallback(() => {
+        setContext('count', (count) => count + 1);
+    }, [setContext]);
+
+    const onDecrement = React.useCallback(() => {
+        setContext('count', (count) => count - 1);
+    }, [setContext]);
+
+
+    return {
+        onAddition,
+        onDecrement
+    };
+};
+
+export default connect(useStateToProps)(Controls);

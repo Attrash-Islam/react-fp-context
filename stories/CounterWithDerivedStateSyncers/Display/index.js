@@ -1,11 +1,8 @@
 import React from 'react';
-import CounterContext from '../context';
+import { connect } from '../../../src';
 import './style.scss';
 
-const Display = () => {
-    const { context } = React.useContext(CounterContext);
-    const { count, color } = context;
-
+const Display = ({ count, color }) => {
     console.log('rendered Display', { count, color });
 
     return (
@@ -15,4 +12,9 @@ const Display = () => {
     )
 };
 
-export default Display;
+const useStateToProps = ({ context }) => ({
+    count: context.count,
+    color: context.color
+});
+
+export default connect(useStateToProps)(Display);

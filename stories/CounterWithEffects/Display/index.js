@@ -1,11 +1,8 @@
 import React from 'react';
-import CounterContext from '../context';
+import { connect } from '../../../src';
 import './style.scss';
 
-const Display = () => {
-    const { context } = React.useContext(CounterContext);
-    const { count } = context;
-
+const Display = ({ count }) => {
     return (
         <div className="display">
             {count}
@@ -13,4 +10,8 @@ const Display = () => {
     )
 };
 
-export default Display;
+const useStateToProps = ({ context }) => ({
+    count: context.count
+});
+
+export default connect(useStateToProps)(Display);
