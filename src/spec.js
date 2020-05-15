@@ -9,6 +9,11 @@ import ReactFpContextProvider from '.';
 
 configure({ adapter: new Adapter() });
 
+jest.spyOn(console, 'groupCollapsed');
+jest.spyOn(console, 'log');
+jest.spyOn(console, 'trace');
+jest.spyOn(console, 'groupEnd');
+
 let currentContext;
 let currentSetContext;
 let renderedTimes;
@@ -103,6 +108,34 @@ it('should execute effects when get passed on each update', () => {
     });
 
     expect(fun).toHaveBeenCalledWith({ context: currentContext, setContext: currentSetContext });
+});
+
+it('should not console when debug mode is OFF', () => {
+    const Spec = App({ Context, debug: false });
+    mount(<Spec count={0}/>);
+
+    act(() => {
+        currentSetContext('count', 4);
+    });
+
+    expect(console.groupCollapsed).not.toHaveBeenCalledWith('%c react-fp-context::setContext Path "count"', 'color:#1dbf73');
+    expect(console.log).not.toHaveBeenCalledWith({ value: 4 });
+    expect(console.trace).not.toHaveBeenCalled();
+    expect(console.groupEnd).not.toHaveBeenCalled();
+});
+
+it('should console in debug mode', () => {
+    const Spec = App({ Context, debug: true });
+    mount(<Spec count={0}/>);
+
+    act(() => {
+        currentSetContext('count', 4);
+    });
+
+    expect(console.groupCollapsed).toHaveBeenCalledWith('%c react-fp-context::setContext Path "count"', 'color:#1dbf73');
+    expect(console.log).toHaveBeenCalledWith({ value: 4 });
+    expect(console.trace).toHaveBeenCalled();
+    expect(console.groupEnd).toHaveBeenCalled();
 });
 
 it('should not re-render when connect state slice do not change', () => {
