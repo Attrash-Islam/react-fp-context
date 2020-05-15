@@ -36,4 +36,29 @@ it('should build initial context value based on initial props', () => {
     expect(currentContext).toEqual({ count: 1, name: 'islam' });
 });
 
-console.log(currentSetContext);
+it('should update context value when calling setContext with a value for a specific path', () => {
+    const Spec = App({ Context });
+    mount(<Spec count={1} name="islam"/>);
+
+    currentSetContext('count', 2);
+
+    expect(currentContext).toEqual({ count: 2, name: 'islam' });
+});
+
+it('should update context value when calling functional setContext for a specific path', () => {
+    const Spec = App({ Context });
+    mount(<Spec count={1} name="islam"/>);
+
+    currentSetContext('count', (count) => count + 1);
+
+    expect(currentContext).toEqual({ count: 2, name: 'islam' });
+});
+
+it('should build initial context value based on initialPropsMapper if get passed', () => {
+    const initialPropsMapper = ({ count, name }) => ({ namespace: { count, name, address: '' } });
+
+    const Spec = App({ Context, initialPropsMapper });
+    mount(<Spec count={1} name="islam"/>);
+
+    expect(currentContext).toEqual({ namespace: { count: 1, name: 'islam', address: '' } });
+});
