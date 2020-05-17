@@ -4,7 +4,7 @@ import { mount } from 'enzyme';
 import identity from 'lodash/fp/identity';
 import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import connect from './connect';
+import connect, { CONNECT_WITHOUT_PROVIDER_ERROR_MSG } from './connect';
 import ReactFpContextProvider from '.';
 
 configure({ adapter: new Adapter() });
@@ -110,33 +110,38 @@ it('should execute effects when get passed on each update', () => {
     expect(fun).toHaveBeenCalledWith({ context: currentContext, setContext: currentSetContext });
 });
 
-it('should not console when debug mode is OFF', () => {
-    const Spec = App({ Context, debug: false });
-    mount(<Spec count={0}/>);
+describe('debug mode', () => {
+    const args = ['%c react-fp-context::setContext Path "count"', 'color:#1dbf73'];
 
-    act(() => {
-        currentSetContext('count', 4);
+    it('should not console when debug mode is OFF', () => {
+        const Spec = App({ Context, debug: false });
+        mount(<Spec count={0}/>);
+    
+        act(() => {
+            currentSetContext('count', 4);
+        });
+    
+        expect(console.groupCollapsed).not.toHaveBeenCalledWith(...args);
+        expect(console.log).not.toHaveBeenCalledWith({ value: 4 });
+        expect(console.trace).not.toHaveBeenCalled();
+        expect(console.groupEnd).not.toHaveBeenCalled();
     });
-
-    expect(console.groupCollapsed).not.toHaveBeenCalledWith('%c react-fp-context::setContext Path "count"', 'color:#1dbf73');
-    expect(console.log).not.toHaveBeenCalledWith({ value: 4 });
-    expect(console.trace).not.toHaveBeenCalled();
-    expect(console.groupEnd).not.toHaveBeenCalled();
+    
+    it('should console in debug mode', () => {
+        const Spec = App({ Context, debug: true });
+        mount(<Spec count={0}/>);
+    
+        act(() => {
+            currentSetContext('count', 4);
+        });
+    
+        expect(console.groupCollapsed).toHaveBeenCalledWith(...args);
+        expect(console.log).toHaveBeenCalledWith({ value: 4 });
+        expect(console.trace).toHaveBeenCalled();
+        expect(console.groupEnd).toHaveBeenCalled();
+    });
 });
 
-it('should console in debug mode', () => {
-    const Spec = App({ Context, debug: true });
-    mount(<Spec count={0}/>);
-
-    act(() => {
-        currentSetContext('count', 4);
-    });
-
-    expect(console.groupCollapsed).toHaveBeenCalledWith('%c react-fp-context::setContext Path "count"', 'color:#1dbf73');
-    expect(console.log).toHaveBeenCalledWith({ value: 4 });
-    expect(console.trace).toHaveBeenCalled();
-    expect(console.groupEnd).toHaveBeenCalled();
-});
 
 it('should not re-render when connect state slice do not change', () => {
     const ContextInspector = ({ count, setContext }) => {
@@ -174,10 +179,7 @@ it('should throw error when using connect without Provider', () => {
 
     const ConnectedContextInspector = connect(({ context: { count }, setContext }) => ({ count, setContext }))(ContextInspector);
 
-    try {
+    expect(() => {
         mount(<ConnectedContextInspector count={0}/>);
-        expect(true).toBe(false); // Test should fail if render is passing without error.
-    } catch (e) {
-        expect(e.message).toBe('Are you trying to use ReactFpContext\'s connect() without a Provider?');
-    }
+    }).toThrow(CONNECT_WITHOUT_PROVIDER_ERROR_MSG);
 });

@@ -2,12 +2,14 @@ import React from 'react';
 import { TreeContext } from './ContextProvider';
 import isPropsIdentical from './isPropsIdentical';
 
+export const CONNECT_WITHOUT_PROVIDER_ERROR_MSG = 'Are you trying to use ReactFpContext\'s connect() without a Provider?';
+
 const connect = (useStateToProps) => (Component) => (ownProps) => {
     const memo = React.useRef({ props: {}, forceUpdate: 0 });
     const Context = React.useContext(TreeContext);
 
     if (!Context) {
-        throw new Error('Are you trying to use ReactFpContext\'s connect() without a Provider?');
+        throw new Error(CONNECT_WITHOUT_PROVIDER_ERROR_MSG);
     }
 
     const { context, setContext } = React.useContext(Context);
