@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
 import identity from 'lodash/fp/identity';
 import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import connect, { CONNECT_WITHOUT_PROVIDER_ERROR_MSG } from './connect';
-import ReactFpContextProvider from '.';
+import ReactWisteriaProvider from '.';
 
 configure({ adapter: new Adapter() });
 
@@ -30,7 +30,7 @@ const ContextInspector = ({ context, setContext }) => {
 
 const ConnectedContextInspector = connect(identity)(ContextInspector);
 
-const App = (options) => ReactFpContextProvider(options)(ConnectedContextInspector);
+const App = (options) => ReactWisteriaProvider(options)(ConnectedContextInspector);
 
 beforeEach(() => {
     currentContext = null;
@@ -152,7 +152,7 @@ it('should not re-render when connect state slice do not change', () => {
     };
 
     const ConnectedContextInspector = connect(({ context: { count }, setContext }) => ({ count, setContext }))(ContextInspector);
-    const Spec = ReactFpContextProvider({ Context })(ConnectedContextInspector);
+    const Spec = ReactWisteriaProvider({ Context })(ConnectedContextInspector);
 
     mount(<Spec count={0}/>);
     expect(renderedTimes).toBe(1);
@@ -182,4 +182,35 @@ it('should throw error when using connect without Provider', () => {
     expect(() => {
         mount(<ConnectedContextInspector count={0}/>);
     }).toThrow(CONNECT_WITHOUT_PROVIDER_ERROR_MSG);
+});
+
+it('should not re-render when some App parent of the provider renders if the props of the Provider did\'n changed', () => {
+    const Child = () => {
+        const { context, setContext } = React.useContext(Context);
+        ContextInspector({ context, setContext });
+
+        return null;
+    };
+
+    const App = ReactWisteriaProvider({ Context })(() => (
+        <Child/>
+    ));
+
+    const AppSomeParent = () => {
+        const [, setState] = useState(0);
+        const forceUpdate = () => setState((x) => x + 1);
+
+        return (
+            <>
+                <App count={1}/>
+                <div className="force-update" onClick={forceUpdate}/>
+            </>
+        );
+    }
+
+    const wrapper = mount(<AppSomeParent count={0}/>);
+    expect(renderedTimes).toBe(1);
+
+    wrapper.find('.force-update').simulate('click');
+    expect(renderedTimes).toBe(1);
 });

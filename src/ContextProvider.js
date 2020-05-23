@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import identity from 'lodash/fp/identity';
 import useStateManagement from './useStateManagement';
 
@@ -10,7 +10,7 @@ const ContextProvider = ({
     derivedStateSyncers = [],
     effects = [],
     debug = false
-}) => (Component) => (props) => {
+}) => (Component) => memo((props) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [context, setContext] = useStateManagement(initialPropsMapper(props), derivedStateSyncers, debug);
     effects.forEach((effect) => effect({ context, setContext }));
@@ -22,6 +22,6 @@ const ContextProvider = ({
             </Context.Provider>
         </TreeContext.Provider>
     );
-};
+});
 
 export default ContextProvider;
