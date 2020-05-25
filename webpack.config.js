@@ -1,14 +1,17 @@
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+
 module.exports = {
     entry: './src/index.js',
     output: {
       filename: 'index.js',
       libraryTarget: 'umd'
     },
+    plugins: [
+      new LodashModuleReplacementPlugin({
+        currying: true
+      })
+    ],
     externals : [
-      'lodash/fp/identity',
-      'lodash/fp/set',
-      'lodash/fp/update',
-      'lodash/fp/isFunction',
       {
         react: {
             root: 'React',
