@@ -8,7 +8,9 @@ module.exports = {
     },
     plugins: [
       new LodashModuleReplacementPlugin({
-        currying: true
+        currying: true,
+        paths: true,
+        cloning: true
       })
     ],
     externals : [
