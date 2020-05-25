@@ -1,6 +1,6 @@
 {
   "name": "react-wisteria",
-  "version": "2.0.0-rc",
+  "version": "2.0.0-rc2",
   "description": "React Functional Context",
   "keywords": [
     "react",
@@ -11,9 +11,7 @@
   ],
   "main": "dist/index.js",
   "typings": "index.d.ts",
-  "dependencies": {
-    "lodash": "^4.17.15"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.5",
@@ -31,6 +29,7 @@
     "eslint-plugin-react": "^7.18.3",
     "eslint-plugin-react-hooks": "^2.4.0",
     "jest": "^26.0.1",
+    "lodash": "^4.17.15",
     "lodash-webpack-plugin": "^0.11.5",
     "node-sass": "^4.13.1",
     "pre-commit": "^1.2.2",
