@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactWisteriaProvider from '../../src';
+import { Provider } from '../../src';
 import NestedRelationContext from './context';
 import Child from './Child';
 import derivedA from './syncers/a';
@@ -26,7 +26,7 @@ const App = () => {
       );
 };
 
-export default ReactWisteriaProvider({
+export default Provider({
     Context: NestedRelationContext,
     derivedStateSyncers: [derivedA, derivedB, derivedC]
 })(App);

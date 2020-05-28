@@ -4,7 +4,7 @@ import { mount } from 'enzyme';
 import identity from 'lodash/fp/identity';
 import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import ReactFpContextProvider, { connect } from '../dist';
+import { connect, Provider } from '../dist';
 import { CONNECT_WITHOUT_PROVIDER_ERROR_MSG } from './connect';
 
 configure({ adapter: new Adapter() });
@@ -31,7 +31,7 @@ const ContextInspector = ({ context, setContext }) => {
 
 const ConnectedContextInspector = connect(identity)(ContextInspector);
 
-const App = (options) => ReactFpContextProvider(options)(ConnectedContextInspector);
+const App = (options) => Provider(options)(ConnectedContextInspector);
 
 beforeEach(() => {
     currentContext = null;
@@ -153,7 +153,7 @@ it('should not re-render when connect state slice do not change', () => {
     };
 
     const ConnectedContextInspector = connect(({ context: { count }, setContext }) => ({ count, setContext }))(ContextInspector);
-    const Spec = ReactFpContextProvider({ Context })(ConnectedContextInspector);
+    const Spec = Provider({ Context })(ConnectedContextInspector);
 
     mount(<Spec count={0}/>);
     expect(renderedTimes).toBe(1);

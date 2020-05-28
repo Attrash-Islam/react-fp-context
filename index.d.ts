@@ -1,10 +1,7 @@
 declare module 'react-wisteria' {
+    export const Provider: IProvider;
 
-    const reactWisteria: ReactWisteriaAPI;
-
-    export default reactWisteria;
-
-    type IProviderResponse = (component: React.Component) => React.Component;
+    export const connect: IConnect;
 
     interface IOptions {
         /** React Context that will be build based on the Root Component props */
@@ -12,7 +9,7 @@ declare module 'react-wisteria' {
         /**
          * a mapper function to construct the state shape based on the Root Component props
          */
-        initialPropsMapper?: Function,
+        initialPropsMapper?: (Object) => Object,
         /**
          * Derived state syncers
          */
@@ -23,7 +20,7 @@ declare module 'react-wisteria' {
         effects?: []
     }
 
-    interface ReactWisteriaAPI {
-        (options: IOptions): IProviderResponse
-    }
+    type IProvider = (options: IOptions) => (Component: React.Component | React.FunctionComponent) => React.FunctionComponent;
+
+    type IConnect = (useStateToProps: (state: Object) => Object) => (Component: React.Component | React.FunctionComponent) => React.FunctionComponent;
 }

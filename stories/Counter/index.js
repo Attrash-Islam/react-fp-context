@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactWisteriaProvider from '../../src';
+import { Provider } from '../../src';
 import Display from './Display';
 import Controls from './Controls';
 import CounterContext from './context';
@@ -16,6 +16,6 @@ const ConnectedCounter = () => {
     );
 };
 
-export default ReactWisteriaProvider({
+export default Provider({
     Context: CounterContext
 })(ConnectedCounter);

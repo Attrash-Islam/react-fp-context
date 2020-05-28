@@ -60,7 +60,7 @@ export default CounterContext;
 then we wrap our **Root component** (`<Counter/>`) like this:
 
 ```js
-import ReactWisteriaProvider from 'react-wisteria';
+import { Provider } from 'react-wisteria';
 import CounterContext from './CounterContext';
 
 const Counter = () => {
@@ -72,12 +72,12 @@ const Counter = () => {
     );
 };
 
-export default ReactWisteriaProvider({
+export default Provider({
     Context: CounterContext
 })(Counter);
 ```
 
-As you can see, the context is being sent to ReactWisteriaProvider as part of its options.
+As you can see, the context is being sent to Provider as part of its options.
 
 Let us now render our Root component with its initial props (only the current counter value):
 
@@ -163,7 +163,7 @@ Up until now, we can see that the Context we passed into the options of the libr
 But what if we need to map the Root props to a different state structure? Easy. We just pass another option (`initialPropsMapper`):
 
 ```js
-import ReactWisteriaProvider from 'react-wisteria';
+import { Provider } from 'react-wisteria';
 import CounterContext from './CounterContext';
 
 const Counter = () => {
@@ -175,7 +175,7 @@ const Counter = () => {
     );
 };
 
-export default ReactWisteriaProvider({
+export default Provider({
     Context: CounterContext,
     initialPropsMapper: ({ count }) => ({ mystate: { count }})
 })(Counter);
@@ -211,7 +211,7 @@ export default useRequestReportOnTen;
 First we define our hook - then we inject it into our options:
 
 ```js
-import ReactWisteriaProvider from 'react-wisteria';
+import { Provider } from 'react-wisteria';
 import CounterContext from './CounterContext';
 
 const Counter = () => {
@@ -223,7 +223,7 @@ const Counter = () => {
     );
 };
 
-export default ReactWisteriaProvider({
+export default Provider({
     Context: CounterContext,
     effects: [useRequestReportOnTen]
 })(Counter);
@@ -302,7 +302,7 @@ This function receives the context, setContext, prevContext (empty object {} in 
 After that we define this syncer in our syncers list:
 
 ```js
-import ReactWisteriaProvider from 'react-wisteria';
+import { Provider } from 'react-wisteria';
 import CounterContext from './CounterContext';
 
 const Counter = () => {
@@ -314,7 +314,7 @@ const Counter = () => {
     );
 };
 
-export default ReactWisteriaProvider({
+export default Provider({
     Context: CounterContext,
     derivedStateSyncers: [blueOnEvenRedInOdd]
 })(Counter);

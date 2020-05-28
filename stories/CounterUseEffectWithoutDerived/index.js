@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactWisteriaProvider from '../../src';
+import { Provider } from '../../src';
 import CounterContext from './context';
 import Display from './Display';
 import Controls from './Controls';
@@ -16,7 +16,7 @@ const Counter = () => {
     );
 };
 
-export default ReactWisteriaProvider({
+export default Provider({
     Context: CounterContext,
     effects: [useBlueOnEvenRedOnOdd]
 })(Counter);
