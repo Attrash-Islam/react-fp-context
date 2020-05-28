@@ -43,7 +43,7 @@ it('should build initial context value based on initial props', () => {
     const Spec = App({ Context });
     mount(<Spec count={1} name="islam"/>);
 
-    expect(currentContext).toEqual({ count: 1, name: 'islam' });
+    expect(currentContext).toEqual({ count: 1, name: 'islamx' });
 });
 
 it('should update context value when calling setContext with a value for a specific path', () => {
