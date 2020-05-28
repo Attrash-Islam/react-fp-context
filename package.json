@@ -45,7 +45,7 @@
     "storybook": "start-storybook",
     "build": "node_modules/.bin/webpack --config webpack.config.js",
     "lint": "eslint .",
-    "test": "jest"
+    "test": "npm run build && jest"
   },
   "pre-commit": [
     "lint",

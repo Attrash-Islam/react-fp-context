@@ -4,15 +4,16 @@ import { mount } from 'enzyme';
 import identity from 'lodash/fp/identity';
 import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import connect, { CONNECT_WITHOUT_PROVIDER_ERROR_MSG } from './connect';
-import ReactFpContextProvider from '.';
+import ReactFpContextProvider, { connect } from '../dist';
+import { CONNECT_WITHOUT_PROVIDER_ERROR_MSG } from './connect';
 
 configure({ adapter: new Adapter() });
 
-jest.spyOn(console, 'groupCollapsed');
-jest.spyOn(console, 'log');
-jest.spyOn(console, 'trace');
-jest.spyOn(console, 'groupEnd');
+jest.spyOn(console, 'groupCollapsed').mockImplementation(() => null);
+jest.spyOn(console, 'log').mockImplementation(() => null);
+jest.spyOn(console, 'error').mockImplementation(() => null);
+jest.spyOn(console, 'trace').mockImplementation(() => null);
+jest.spyOn(console, 'groupEnd').mockImplementation(() => null);
 
 let currentContext;
 let currentSetContext;
