@@ -1,6 +1,6 @@
 # React Wisteria
 
-**react-wisteria** is a library that wraps the [React Context](https://reactjs.org/docs/context.html) with a functional API ([lodash/fp](https://gist.github.com/jfmengels/6b973b69c491375117dc) API) that makes it easier to work with state. It provides you with a single way to get your state and a single way to update it without the need for selectors, actions, reducers, types, etc.
+**react-wisteria** is a library that wraps the [React Context](https://reactjs.org/docs/context.html) with a functional setter API that makes it easier to work with state. Get your state and update it without the need for selectors, actions, reducers, types, etc.
 
 ## Background
 
@@ -144,12 +144,16 @@ const useStateToProps = ({ context, setContext }) => {
 export default connect(useStateToProps)(Controls);
 ```
 
-**Please note:** Multiple `setContext` calls will be batched based on React.setState batching whilst having only one render phase. Also, `setContext` is using the `lodash/fp#set` and `lodash/fp#update` methods under the hood which means that you can update nested paths and arrays easily.
+**Please note:** Multiple `setContext` calls will be batched based on React.setState batching whilst having only one render phase. Also, `setContext` is using Ramda functions under the hood which means that you can update nested paths and arrays easily.
 
 ```js
     // create complex path that do not exist.
     setContext('new.path.that.not.exist', 5);
     // { new: { path: { that: { not: { exist: 5 } } } } }
+
+    // Update array item at indexes 0 and 1.
+    setContext('array.with.nested.path.0', 1);
+    setContext('array.with.nested.path.1', 2);
 
     // add new member to nested members array.
     setContext('add.member.to.members', (members) => members.concat({ name: 'test' }));
@@ -184,7 +188,7 @@ export default Provider({
 
 If you console log your Context, you'll see that it now received the new shape.
 
-(We can even compare objects by referental equality (===) in`lodash/fp` since updates break the reference in the changed object upto the upper parent reference, so we can distinguish changes in each level without having to do expensive diffing.)
+(We can even compare objects by referental equality (===) since updates break the reference in the changed object upto the upper parent reference, so we can distinguish changes in each level without having to do expensive diffing.)
 
 ## effects Option
 

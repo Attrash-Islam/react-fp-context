@@ -1,7 +1,6 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
-import identity from 'lodash/fp/identity';
 import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { connect, Provider } from '../dist';
@@ -29,7 +28,7 @@ const ContextInspector = ({ context, setContext }) => {
     return null;
 };
 
-const ConnectedContextInspector = connect(identity)(ContextInspector);
+const ConnectedContextInspector = connect((x) => x)(ContextInspector);
 
 const App = (options) => Provider(options)(ConnectedContextInspector);
 
@@ -55,6 +54,37 @@ it('should update context value when calling setContext with a value for a speci
     });
 
     expect(currentContext).toEqual({ count: 2, name: 'islam' });
+});
+
+it('should build context nested non-exists value when calling setContext non exist path', () => {
+    const Spec = App({ Context });
+    mount(<Spec count={1} name="islam"/>);
+
+    act(() => {
+        currentSetContext('path.not.found.here', 2);
+    });
+
+    expect(currentContext).toEqual({
+        count: 1,
+        path: { not: { found: { here: 2 } } },
+        name: 'islam'
+    });
+});
+
+it('should build context nested non-exists array value when calling setContext non exist path', () => {
+    const Spec = App({ Context });
+    mount(<Spec count={1} name="islam"/>);
+
+    act(() => {
+        currentSetContext('path.not.found.here.0', 1);
+        currentSetContext('path.not.found.here.1', 2);
+    });
+
+    expect(currentContext).toEqual({
+        count: 1,
+        path: { not: { found: { here: [ 1,2 ] } } },
+        name: 'islam'
+    });
 });
 
 it('should update context value when calling functional setContext for a specific path', () => {

@@ -1,6 +1,6 @@
 import React from 'react';
-import { TreeContext } from './ContextProvider';
-import isPropsIdentical from './isPropsIdentical';
+import { TreeContext } from '../ContextProvider';
+import isPropsIdentical from '../isPropsIdentical';
 
 export const CONNECT_WITHOUT_PROVIDER_ERROR_MSG = 'Are you trying to use ReactWisteria\'s connect() without a Provider?';
 

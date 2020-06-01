@@ -1,14 +1,10 @@
 import React from 'react';
-import set from 'lodash/fp/set';
-import update from 'lodash/fp/update';
-import isFunction from 'lodash/fp/isFunction';
-import computeDerivedStates from './computeDerivedStates';
-import traceUpdates from './traceUpdates';
+import computeDerivedStates from '../computeDerivedStates';
+import traceUpdates from '../traceUpdates';
+import updater from '../updater';
 
 /**
  * The state management core.
- * We use functional lodash in order to identify easily if any changes happened at any level in the state
- * and to do an easier way of updating the state.
  *
  * @param initialState
  * @param derivedStateSyncers
@@ -23,10 +19,8 @@ const useStateManagement = (initialState, derivedStateSyncers, debug) => {
             traceUpdates({ path, value });
         }
 
-        const updateFunction = isFunction(value) ? update : set;
-
         setState((state) => {
-            const newState = updateFunction(path, value, state);
+            const newState = updater(path, value, state);
             const stateAfterDerived = computeDerivedStates({ prevState: state, state: newState, derivedStateSyncers, debug });
             return stateAfterDerived;
         });

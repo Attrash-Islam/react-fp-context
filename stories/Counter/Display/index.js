@@ -1,5 +1,5 @@
 import React, { Profiler } from 'react';
-import _ from 'lodash';
+import { range } from 'lodash';
 import { connect } from '../../../src';
 import './style.scss';
 
@@ -16,9 +16,9 @@ const Display = ({ count }) => {
         <Profiler id="DisplayPerformance" onRender={callback}>
             <div className="display">
                 <table>
-                    {_.range(100).map((i) => (
+                    {range(100).map((i) => (
                         <tr key={i}>
-                            {_.range(100).map((j) => (
+                            {range(100).map((j) => (
                                 <td key={j}>{count}</td>
                             ))}
                         </tr>

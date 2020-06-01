@@ -1,12 +1,11 @@
 import React from 'react';
-import identity from 'lodash/fp/identity';
-import useStateManagement from './useStateManagement';
+import useStateManagement from '../useStateManagement';
 
 export const TreeContext = React.createContext();
 
 const ContextProvider = ({
     Context,
-    initialPropsMapper = identity,
+    initialPropsMapper = (x) => x,
     derivedStateSyncers = [],
     effects = [],
     debug = false

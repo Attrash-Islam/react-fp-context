@@ -1,7 +1,5 @@
-import isFunction from 'lodash/fp/isFunction';
-import update from 'lodash/fp/update';
-import set from 'lodash/fp/set';
-import traceUpdates from './traceUpdates';
+import traceUpdates from '../traceUpdates';
+import updater from '../updater';
 
 const computeDerivedStates = ({ prevState, state, derivedStateSyncers, debug }) => {
     let lastCurrentState = state;
@@ -28,8 +26,7 @@ const computeDerivedStates = ({ prevState, state, derivedStateSyncers, debug }) 
         let stateBeforeUpdates = lastCurrentState;
 
         updates.forEach(({ path, value }) => {
-            const updateFunction = isFunction(value) ? update : set;
-            lastCurrentState = updateFunction(path, value, lastCurrentState);
+            lastCurrentState = updater(path, value, lastCurrentState);
         });
 
         lastPrevState = stateBeforeUpdates;

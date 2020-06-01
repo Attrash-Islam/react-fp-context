@@ -1,18 +1,9 @@
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-
 module.exports = {
     entry: './src/index.js',
     output: {
       filename: 'index.js',
       libraryTarget: 'umd'
     },
-    plugins: [
-      new LodashModuleReplacementPlugin({
-        currying: true,
-        paths: true,
-        cloning: true
-      })
-    ],
     externals : [
       {
         react: {
