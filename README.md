@@ -132,7 +132,7 @@ const useStateToProps = ({ context, setContext }) => {
     }, [setContext, count]);
 
     const onDecrement = React.useCallback(() => {
-        setContext('count', count + 1);
+        setContext('count', count - 1);
     }, [setContext, count]);
 
     return {
