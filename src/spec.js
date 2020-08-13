@@ -5,6 +5,7 @@ import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { connect, Provider } from '../dist';
 import { CONNECT_WITHOUT_PROVIDER_ERROR_MSG } from './connect';
+import { INFINITE_SET_CONTEXT_IN_SYNCER_ERROR_MSG } from './computeDerivedStates';
 
 configure({ adapter: new Adapter() });
 
@@ -125,6 +126,19 @@ it('should derive state value if derivedStateSyncers get passed with one render 
 
     expect(renderedTimes).toBe(2);
     expect(currentContext).toEqual({ count: 3, color: 'red' });
+});
+
+it('should throw error if derivedStateSyncers is calling setContext infinitely', () => {
+    const infiniteSyncer = ({ context, setContext }) => {
+        // We always call setContext without being wrapped in conditions.
+        setContext('color', context.count % 2 === 0 ? 'blue' : 'red');
+    };
+
+    const Spec = App({ Context, derivedStateSyncers: [infiniteSyncer] });
+
+    expect(() => {
+        mount(<Spec count={0}/>);
+    }).toThrow(INFINITE_SET_CONTEXT_IN_SYNCER_ERROR_MSG);
 });
 
 it('should execute effects when get passed on each update', () => {

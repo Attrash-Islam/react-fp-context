@@ -1,6 +1,11 @@
 import traceUpdates from '../traceUpdates';
 import updater from '../updater';
 
+const MAX_RECURSION_CYCLES_COUNT = 100;
+
+export const INFINITE_SET_CONTEXT_IN_SYNCER_ERROR_MSG = `One of your derivedStateSyncers is infinitely calling setContext. Reached Max limit: ${MAX_RECURSION_CYCLES_COUNT}.
+Pass the "debug" option to the Provider in order to see the state updates.`;
+
 const computeDerivedStates = ({ prevState, state, derivedStateSyncers, debug }) => {
     let lastCurrentState = state;
     let lastPrevState = prevState;
@@ -14,7 +19,15 @@ const computeDerivedStates = ({ prevState, state, derivedStateSyncers, debug }) 
         updates.push({ path, value });
     };
 
+    let cycleCount = 0;
+
     do {
+        cycleCount++;
+
+        if (cycleCount === MAX_RECURSION_CYCLES_COUNT) {
+            throw new Error(INFINITE_SET_CONTEXT_IN_SYNCER_ERROR_MSG);
+        }
+
         updates = [];
 
         derivedStateSyncers.forEach((d) => d({
