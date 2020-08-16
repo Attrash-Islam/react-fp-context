@@ -1,6 +1,6 @@
 # React Wisteria
 
-**react-wisteria** is a library that wraps the [React Context](https://reactjs.org/docs/context.html) with a functional setter API that makes it easier to work with state. Get your state and update it without the need for selectors, actions, reducers, types, etc.
+**react-wisteria** is a library that wraps the [React Context](https://reactjs.org/docs/context.html) with a [Golden Path](https://github.com/Attrash-Islam/golden-path) Functional setter API that makes it easier to work with state. Get your state and update it without the need for selectors, actions, reducers, types, etc.
 
 ## Background
 
@@ -144,7 +144,7 @@ const useStateToProps = ({ context, setContext }) => {
 export default connect(useStateToProps)(Controls);
 ```
 
-**Please note:** Multiple `setContext` calls will be batched based on React.setState batching whilst having only one render phase. Also, `setContext` is using Ramda functions under the hood which means that you can update nested paths and arrays easily.
+**Please note:** Multiple `setContext` calls will be batched based on React.setState batching whilst having only one render phase. Also, `setContext` is using [golden-path](https://github.com/Attrash-Islam/golden-path) syntax under the hood which means that you can update nested paths and arrays easily.
 
 ```js
     // create complex path that do not exist.
@@ -154,6 +154,8 @@ export default connect(useStateToProps)(Controls);
     // Update array item at indexes 0 and 1.
     setContext('array.with.nested.path.0', 1);
     setContext('array.with.nested.path.1', 2);
+
+    setContext('friends[id=2].name', 'newName');
 
     // add new member to nested members array.
     setContext('add.member.to.members', (members) => members.concat({ name: 'test' }));
