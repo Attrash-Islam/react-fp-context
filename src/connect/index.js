@@ -17,6 +17,9 @@ const connect = (mapStateToProps, mapDispatchToProps = {}) => (Component) => (ow
 
     const getSnapshot = (store) => {
         const mappedPropsSnapshot = mapStateToProps ? mapStateToProps(store.getState(), ownProps) : {};
+
+        // If the mapped props got changed then we override the memoized reference and return it
+        // in order to notify the snapshots subscribers about the change.
         if (!isPropsIdentical(mappedPropsSnapshot, memo.current.mappedPropsSnapshot)) {
             memo.current.mappedPropsSnapshot = mappedPropsSnapshot;
         }
