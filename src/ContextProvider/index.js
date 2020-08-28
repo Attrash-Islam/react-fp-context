@@ -1,26 +1,31 @@
-import React from 'react';
-import useStateManagement from '../useStateManagement';
+import React, { unstable_createMutableSource, createContext } from 'react';
+import WisteriaStore from '../WisteriaStore';
 
-export const TreeContext = React.createContext();
+export const TreeContext = createContext();
 
 const ContextProvider = ({
-    Context,
-    initialPropsMapper = (x) => x,
-    derivedStateSyncers = [],
-    effects = [],
-    debug = false
-}) => (Component) => (props) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [context, setContext] = useStateManagement(initialPropsMapper(props), derivedStateSyncers, debug);
-    effects.forEach((effect) => effect({ context, setContext }));
+    initialPropsMapper = (x) => x
+}) => {
+    const store = new WisteriaStore({
+        initialPropsMapper
+    });
 
-    return (
-        <TreeContext.Provider value={Context}>
-            <Context.Provider value={{ context, setContext }}>
-                <Component {...props}/>
-            </Context.Provider>
-        </TreeContext.Provider>
+    const mutableSource = unstable_createMutableSource(
+        store,
+        store.getState
     );
+
+    const MutableSourceContext = createContext(mutableSource);
+
+    return (Component) => (props) => {
+        store.init(props);
+
+        return (
+            <TreeContext.Provider value={MutableSourceContext}>
+                <Component {...props}/>
+            </TreeContext.Provider>
+        );
+    }
 };
 
 export default ContextProvider;

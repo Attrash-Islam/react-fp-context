@@ -9,15 +9,10 @@ const Strange = ({ countx, onClick }) => {
     )
 };
 
-const useStateToProps = ({ context, setContext }) => {
-    const onClick = React.useCallback(() => {
-        setContext('countx', 'id: ' + Math.random());
-    }, [setContext]);
+const mapStateToProps = ({ countx }) => ({ countx });
 
-    return {
-        countx: context.countx,
-        onClick
-    }
+const onClick = ({ setContext }) => () => {
+    setContext('countx', 'id: ' + Math.random());
 };
 
-export default connect(useStateToProps)(Strange);
+export default connect(mapStateToProps, { onClick })(Strange);

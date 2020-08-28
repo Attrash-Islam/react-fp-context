@@ -14,25 +14,17 @@ const Controls = ({ onAddition, onDecrement, onConsole }) => {
     )
 };
 
-const useStateToProps = ({ context, setContext }) => {
-
-    const onAddition = React.useCallback(() => {
-        setContext('count', (count) => count + 1)
-    }, [setContext]);
-
-    const onDecrement = React.useCallback(() => {
-        setContext('count', (count) => count - 1)
-    }, [setContext]);
-
-    const onConsole = React.useCallback(() => {
-        alert(context.countx);
-    }, [context.countx]);
-
-    return {
-        onAddition,
-        onDecrement,
-        onConsole
-    }
+const onAddition = ({ getContext, setContext }) => () => {
+    const {count } = getContext();
+    setContext('count', count + 1)
 };
 
-export default connect(useStateToProps)(Controls);
+const onDecrement = ({ getContext, setContext }) => () => {
+    setContext('count', getContext().count - 1)
+};
+
+const onConsole = ({ getContext }) => () => {
+    alert(getContext().countx);
+};
+
+export default connect(null, { onAddition, onDecrement, onConsole })(Controls);
