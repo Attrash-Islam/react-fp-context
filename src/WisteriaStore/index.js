@@ -21,7 +21,7 @@ class WisteriaStore {
 
     setContext = (path, value) => {
         this.context = updater(path, value, this.context);
-        this.subscribes.forEach((s) => s());
+        this.subscribes.forEach((s) => s && s());
     }
 
     getState = () => {
@@ -33,7 +33,7 @@ class WisteriaStore {
         const index = this.subscribes.length - 1;
 
         return () => {
-            this.subscribes.splice(index, 1);
+            this.subscribes[index] = null;
         };
     }
 }
