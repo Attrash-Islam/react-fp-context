@@ -1,8 +1,10 @@
-import React, { useContext, unstable_useMutableSource } from 'react';
+import React, { useContext, useCallback, unstable_useMutableSource } from 'react';
 import { TreeContext } from '../ContextProvider';
 import isPropsIdentical from '../isPropsIdentical';
 
 export const CONNECT_WITHOUT_PROVIDER_ERROR_MSG = 'Are you trying to use ReactWisteria\'s connect() without a Provider?';
+
+const subscribe = (store, callback) => store.subscribe(callback);
 
 const connect = (mapStateToProps, mapDispatchToProps = {}) => (Component) => (ownProps) => {
     const memo = React.useRef({ mappedPropsSnapshot: {}, dispatchSnapshot: {} });
@@ -13,9 +15,8 @@ const connect = (mapStateToProps, mapDispatchToProps = {}) => (Component) => (ow
     }
 
     const mutableSource = useContext(Context);
-    const subscribe = (store, callback) => store.subscribe(callback);
 
-    const getSnapshot = (store) => {
+    const getSnapshot = useCallback((store) => {
         const mappedPropsSnapshot = mapStateToProps ? mapStateToProps(store.getState(), ownProps) : {};
 
         // If the mapped props got changed then we override the memoized reference and return it
@@ -31,7 +32,7 @@ const connect = (mapStateToProps, mapDispatchToProps = {}) => (Component) => (ow
         }
 
         return memo.current.mappedPropsSnapshot;
-    };
+    }, [ownProps]);
 
     const mappedProps = unstable_useMutableSource(mutableSource, getSnapshot, subscribe);
 

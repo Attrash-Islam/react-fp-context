@@ -2,6 +2,8 @@ import React from 'react';
 import connect from '../../../src/connect';
 
 const Strange = ({ countx, onClick }) => {
+    console.log('Strange Rendered');
+
     return (
         <button onClick={onClick}>
             Update some value that Table do not refer to - current: {countx}

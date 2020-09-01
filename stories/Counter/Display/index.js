@@ -4,6 +4,8 @@ import { connect } from '../../../src';
 import './style.scss';
 
 const Display = ({ count }) => {
+    console.log('Display Rendered');
+
     return (
         <div className="display">
             {count}
