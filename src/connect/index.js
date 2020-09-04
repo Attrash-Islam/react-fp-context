@@ -8,13 +8,11 @@ const subscribe = (store, callback) => store.subscribe(callback);
 
 const connect = (mapStateToProps, mapDispatchToProps = {}) => (Component) => (ownProps) => {
     const memo = React.useRef({ mappedPropsSnapshot: {}, dispatchSnapshot: {} });
-    const Context = useContext(TreeContext);
+    const mutableSource = useContext(TreeContext);
 
-    if (!Context) {
+    if (!mutableSource) {
         throw new Error(CONNECT_WITHOUT_PROVIDER_ERROR_MSG);
     }
-
-    const mutableSource = useContext(Context);
 
     const getSnapshot = useCallback((store) => {
         const mappedPropsSnapshot = mapStateToProps ? mapStateToProps(store.getState(), ownProps) : {};

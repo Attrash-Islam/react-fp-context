@@ -15,13 +15,11 @@ const ContextProvider = ({
         store.getState
     );
 
-    const MutableSourceContext = createContext(mutableSource);
-
     return (Component) => (props) => {
         store.init(props);
 
         return (
-            <TreeContext.Provider value={MutableSourceContext}>
+            <TreeContext.Provider value={mutableSource}>
                 <Component {...props}/>
             </TreeContext.Provider>
         );
