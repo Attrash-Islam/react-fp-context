@@ -2,7 +2,6 @@ import updater from '../updater';
 
 class WisteriaStore {
     constructor({ initialPropsMapper }) {
-        this.initialized = false;
         this.initialPropsMapper = initialPropsMapper;
         this.subscribes = [];
         this.context = {};
@@ -11,12 +10,7 @@ class WisteriaStore {
     init = (props) => {
         // We want to call always the `initialPropsMapper` because it can contain useContext in consumer's codebase.
         const transformedProps = this.initialPropsMapper(props);
-
-        // If already initialized do nothing.
-        if (this.initialized) { return; }
-
         this.context = transformedProps;
-        this.initialized = true;
     }
 
     setContext = (path, value) => {

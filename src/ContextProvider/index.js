@@ -1,29 +1,34 @@
 import React, { unstable_createMutableSource, createContext } from 'react';
 import WisteriaStore from '../WisteriaStore';
+import { useRef } from 'react';
 
 export const TreeContext = createContext();
 
 const ContextProvider = ({
     initialPropsMapper = (x) => x
-}) => {
-    const store = new WisteriaStore({
-        initialPropsMapper
-    });
+}) => (Component) => (props) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const initRef = useRef();
 
-    const mutableSource = unstable_createMutableSource(
-        store,
-        store.getState
-    );
-
-    return (Component) => (props) => {
-        store.init(props);
-
-        return (
-            <TreeContext.Provider value={mutableSource}>
-                <Component {...props}/>
-            </TreeContext.Provider>
+    if (!initRef.current) {
+        const store = new WisteriaStore({
+            initialPropsMapper
+        });
+    
+        const mutableSource = unstable_createMutableSource(
+            store,
+            store.getState
         );
+
+        store.init(props);
+        initRef.current = mutableSource;
     }
-};
+
+    return (
+        <TreeContext.Provider value={initRef.current}>
+            <Component {...props}/>
+        </TreeContext.Provider>
+    );
+}
 
 export default ContextProvider;
