@@ -21,11 +21,11 @@ const ContextProvider = ({
         );
 
         store.init(props);
-        initRef.current = mutableSource;
+        initRef.current = { mutableSource, store };
     }
 
     return (
-        <TreeContext.Provider value={initRef.current}>
+        <TreeContext.Provider value={initRef.current.mutableSource}>
             <Component {...props}/>
         </TreeContext.Provider>
     );
