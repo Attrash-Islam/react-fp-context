@@ -17,7 +17,7 @@ const Controls = ({ onAddition, onDecrement, onConsole }) => {
 };
 
 const onAddition = ({ getContext, setContext }) => () => {
-    const {count } = getContext();
+    const { count } = getContext();
     setContext('count', count + 1)
 };
 

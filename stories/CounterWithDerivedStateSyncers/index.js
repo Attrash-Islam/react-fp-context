@@ -2,17 +2,20 @@ import React from 'react';
 import { Provider } from '../../src';
 import Display from './Display';
 import Controls from './Controls';
-import Strange from './Strange';
+import blueOnEvenRedInOdd from './derivedStateSyncers/blueOnEvenRedInOdd';
 import './style.scss';
 
-const ConnectedCounter = () => {
+const Counter = () => {
+
     return (
         <div className="counter">
-            <Controls/>
-            <Strange/>
             <Display/>
+            <Controls/>
         </div>
     );
 };
 
-export default Provider()(ConnectedCounter);
+export default Provider({
+    derivedStateSyncers: [blueOnEvenRedInOdd],
+    debug: true
+})(Counter);

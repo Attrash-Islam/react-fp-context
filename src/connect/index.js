@@ -1,6 +1,6 @@
 import React, { useContext, useCallback, unstable_useMutableSource } from 'react';
 import { TreeContext } from '../ContextProvider';
-import isPropsIdentical from '../isPropsIdentical';
+import isPropsIdentical from '../utils/isPropsIdentical';
 
 export const CONNECT_WITHOUT_PROVIDER_ERROR_MSG = 'Are you trying to use ReactWisteria\'s connect() without a Provider?';
 
