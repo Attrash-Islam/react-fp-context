@@ -15,4 +15,4 @@ const ConnectedCounter = () => {
     );
 };
 
-export default Provider()(ConnectedCounter);
+export default Provider({ debug: true })(ConnectedCounter);

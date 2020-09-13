@@ -8,7 +8,8 @@ export const TreeContext = createContext();
 const ContextProvider = ({
     initialPropsMapper = (x) => x,
     effects = [],
-    derivedStateSyncers = []
+    derivedStateSyncers = [],
+    debug = false
 } = {}) => (Component) => (props) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const initRef = useRef();
@@ -16,7 +17,8 @@ const ContextProvider = ({
     if (!initRef.current) {
         const store = new WisteriaStore({
             initialPropsMapper,
-            derivedStateSyncers
+            derivedStateSyncers,
+            debug
         });
     
         const mutableSource = unstable_createMutableSource(
