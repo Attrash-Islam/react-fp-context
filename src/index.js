@@ -1,4 +1,4 @@
-import Provider from './ContextProvider';
+import Provider from './Provider';
 import connect from './connect';
 
 export { Provider, connect };

@@ -1,7 +1,6 @@
 import React, { useContext, useCallback, unstable_useMutableSource } from 'react';
-import { TreeContext } from '../ContextProvider';
 import isPropsIdentical from '../utils/isPropsIdentical';
-import { CONNECT_WITHOUT_PROVIDER_ERROR_MSG } from '../utils/constants';
+import { CONNECT_WITHOUT_PROVIDER_ERROR_MSG, TreeContext } from '../utils/constants';
 
 const subscribe = (store, callback) => store.subscribe(callback);
 

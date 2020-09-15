@@ -40,7 +40,7 @@ Once the Context Selector proposal land we'll add Hooks as another way to get/up
 
 ## Usage
 
-This library exposes a ContextProvider-like HOC that can be passed configurations & the Root component we have in our app.
+This library exposes a Provider-like HOC that can be passed configurations & the Root component we have in our app.
 
 As an example, let's use a standard Counter application where we can increment/decrement a counter whilst the value is being displayed.
 

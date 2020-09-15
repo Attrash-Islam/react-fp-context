@@ -1,11 +1,10 @@
-import React, { unstable_createMutableSource, createContext } from 'react';
+import React, { unstable_createMutableSource } from 'react';
 import WisteriaStore from '../WisteriaStore';
 import { useRef } from 'react';
 import Effects from '../Effects';
+import { TreeContext } from '../utils/constants';
 
-export const TreeContext = createContext();
-
-const ContextProvider = ({
+const Provider = ({
     initialPropsMapper = (x) => x,
     effects = [],
     derivedStateSyncers = [],
@@ -38,4 +37,4 @@ const ContextProvider = ({
     );
 }
 
-export default ContextProvider;
+export default Provider;
