@@ -1,5 +1,11 @@
 # React Wisteria
 
+---
+
+This is the documentation when using React16
+
+---
+
 **react-wisteria** is a library that wraps the [React Context](https://reactjs.org/docs/context.html) with the [Golden Path](https://github.com/Attrash-Islam/golden-path) Functional setter API that makes it easier to work with state. Get your state and update it without the need for selectors, actions, reducers, types, etc.
 
 ## Background
@@ -18,12 +24,13 @@ Wisteria is a genus of flowering plants in the legume family, Fabaceae, that inc
 ## Installation
 
 ```js
-npm i react-wisteria --save
+npm i react-wisteria@4.1.4 --save
 ```
 
 ## Options
 | **Option** | **Description** | **Default Value** |
 | --- | --- | --- |
+| **name** | A name to be shown in "React Context Devtools" | *''*
 | **Context** | A React Context as the state container | *Required*
 | **initialPropsMapper?** | A mapper to map the Root Component props to a different state shape | *_.identity*
 | **effects?** | A list of effects | *[]*
