@@ -5,6 +5,7 @@ import Effects from '../Effects';
 import { TreeContext } from '../utils/constants';
 
 const Provider = ({
+    name = parseInt(1000 + Math.random() * 1000),
     initialPropsMapper = (x) => x,
     effects = [],
     derivedStateSyncers = [],
@@ -31,7 +32,7 @@ const Provider = ({
 
     return (
         <TreeContext.Provider value={initRef.current.mutableSource}>
-            <Effects effects={effects}/>
+            <Effects effects={effects} name={name}/>
             <Component {...props}/>
         </TreeContext.Provider>
     );
