@@ -13,8 +13,9 @@ const ContextProvider = ({
     roots = {},
     debug = false
 }) => (Component) => (props) => {
+    const { children, ...dataProps } = props;
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [context, setContext] = useStateManagement(initialPropsMapper(props), derivedStateSyncers, debug, roots);
+    const [context, setContext] = useStateManagement(initialPropsMapper(dataProps), derivedStateSyncers, debug, roots);
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const rootsValues = useRootsContext({ roots });
     effects.forEach((effect) => effect({ context, setContext, roots: rootsValues }));

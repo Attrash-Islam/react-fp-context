@@ -24,9 +24,11 @@ let renderedTimes;
 const Context = React.createContext();
 const ParentContext = React.createContext();
 
-const ContextInspector = ({ context, setContext }) => {
+const ContextInspector = ({ context, setContext, roots: { ParentContext } }) => {
     currentContext = context;
     currentSetContext = setContext;
+    parentContext = ParentContext && ParentContext.context;
+    parentSetContext = ParentContext && ParentContext.setContext;
     renderedTimes++;
 
     return null;
@@ -39,6 +41,8 @@ const App = (options) => Provider(options)(ConnectedContextInspector);
 beforeEach(() => {
     currentContext = null;
     currentSetContext = null;
+    parentContext = null;
+    parentSetContext = null;
     renderedTimes = 0;
 });
 
@@ -252,3 +256,79 @@ it('should throw error when using connect without Provider', () => {
         mount(<ConnectedContextInspector count={0}/>);
     }).toThrow(CONNECT_WITHOUT_PROVIDER_ERROR_MSG);
 });
+
+it('should show parent context as undefined when not being passed through `roots` option', () => {
+    const Spec = App({ Context });
+    mount(<Spec count={1} name="islam"/>);
+
+    expect(parentContext).toBeUndefined();
+    expect(parentSetContext).toBeUndefined();
+});
+
+describe('Roots Feature', () => {
+    let ChildApp;
+    let ParentApp;
+
+    beforeEach(() => {
+        ChildApp = App({ Context, roots: { ParentContext } });
+        ParentApp = Provider({ Context: ParentContext })(() => <ChildApp count={1} name="islam"/>);
+    
+        mount(<ParentApp name="parent" isParent={true}/>);
+    });
+
+    it('should show parent context as expected when being passed through `roots` option', () => {
+        expect(currentContext).toEqual({ count: 1, name: 'islam' });
+        expect(parentContext).toEqual({ name: 'parent', isParent: true });
+    });
+    
+    it('should update parent context as expected from child scope', () => {
+        expect(parentContext).toEqual({ name: 'parent', isParent: true });
+    
+        act(() => {
+            parentSetContext('name', 'parentGoUpdated');
+        });
+    
+        expect(parentContext).toEqual({ name: 'parentGoUpdated', isParent: true });
+    
+    });
+    
+    it('should execute effects when parent updates', () => {
+        const fun = jest.fn();
+        const ChildApp = App({ Context, roots: { ParentContext }, effects: [fun] });
+        const ParentApp = Provider({ Context: ParentContext })(() => <ChildApp count={1} name="islam"/>);
+    
+        mount(<ParentApp name="parent" isParent={true}/>);
+
+        expect(fun).toHaveBeenCalledTimes(2);
+
+        expect(fun).toHaveBeenCalledWith({
+            context: { count: 1, name: 'islam' },
+            setContext: currentSetContext,
+            roots: {
+                ParentContext: {
+                    context: { name: 'parent', isParent: true },
+                    roots: {},
+                    setContext: parentSetContext
+                }
+            }
+        });
+    
+        act(() => {
+            parentSetContext('name', 'parentGoUpdated');
+        });
+    
+        expect(fun).toHaveBeenCalledTimes(3);
+
+        expect(fun).toHaveBeenCalledWith({
+            context: { count: 1, name: 'islam' },
+            setContext: currentSetContext,
+            roots: {
+                ParentContext: {
+                    context: { name: 'parentGoUpdated', isParent: true },
+                    roots: {},
+                    setContext: parentSetContext
+                }
+            }
+        });
+    });
+})
