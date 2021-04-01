@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import useStateManagement from '../useStateManagement';
+import { useRootsContext } from '../utils';
 
 export const TreeContext = React.createContext();
 
@@ -9,17 +10,20 @@ const ContextProvider = ({
     initialPropsMapper = (x) => x,
     derivedStateSyncers = [],
     effects = [],
+    roots = {},
     debug = false
 }) => (Component) => (props) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [context, setContext] = useStateManagement(initialPropsMapper(props), derivedStateSyncers, debug);
-    effects.forEach((effect) => effect({ context, setContext }));
+    const [context, setContext] = useStateManagement(initialPropsMapper(props), derivedStateSyncers, debug, roots);
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const rootsValues = useRootsContext({ roots });
+    effects.forEach((effect) => effect({ context, setContext, roots: rootsValues }));
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const warnedAboutMissingDevToolRef = useRef();
+    const warnedAboutMissingDevToolRef = React.useRef();
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    useEffect(() => {
+    React.useEffect(() => {
         if (typeof window !== 'undefined' && window._REACT_CONTEXT_DEVTOOL) {
             window._REACT_CONTEXT_DEVTOOL({ id: name, displayName: name, values: context });
         } else if (!warnedAboutMissingDevToolRef.current) {
@@ -30,7 +34,7 @@ const ContextProvider = ({
 
     return (
         <TreeContext.Provider value={Context}>
-            <Context.Provider value={{ context, setContext }}>
+            <Context.Provider value={{ context, setContext, roots }}>
                 <Component {...props}/>
             </Context.Provider>
         </TreeContext.Provider>

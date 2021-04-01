@@ -15,11 +15,14 @@ jest.spyOn(console, 'error').mockImplementation(() => null);
 jest.spyOn(console, 'trace').mockImplementation(() => null);
 jest.spyOn(console, 'groupEnd').mockImplementation(() => null);
 
+let parentContext;
+let parentSetContext;
 let currentContext;
 let currentSetContext;
 let renderedTimes;
 
 const Context = React.createContext();
+const ParentContext = React.createContext();
 
 const ContextInspector = ({ context, setContext }) => {
     currentContext = context;
@@ -167,13 +170,13 @@ it('should execute effects when get passed on each update', () => {
 
     const Spec = App({ Context, effects: [fun] });
     mount(<Spec count={0}/>);
-    expect(fun).toHaveBeenCalledWith({ context: currentContext, setContext: currentSetContext });
+    expect(fun).toHaveBeenCalledWith({ context: currentContext, setContext: currentSetContext, roots: {} });
 
     act(() => {
         currentSetContext('count', 4);
     });
 
-    expect(fun).toHaveBeenCalledWith({ context: currentContext, setContext: currentSetContext });
+    expect(fun).toHaveBeenCalledWith({ context: currentContext, setContext: currentSetContext, roots: {} });
 });
 
 describe('debug mode', () => {
