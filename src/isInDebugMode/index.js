@@ -1,25 +1,16 @@
 import { get } from 'golden-path';
 
-let cache = null;
-
 const isInDebugMode = () => {
-    if (cache !== null) {
-        return cache;
-    }
-
     if (typeof window === 'undefined') {
-        cache = false;
-        return cache;
+        return false;
     }
 
     if (window.isWisteriaDebugModeForced) {
-        cache = true;
-        return cache;
+        return true;
     }
 
     const search = get('location.search', window) || '';
-    cache = search.includes('debugWisteria');
-    return cache;
+    return search.includes('debugWisteria');
 };
 
 export default isInDebugMode;

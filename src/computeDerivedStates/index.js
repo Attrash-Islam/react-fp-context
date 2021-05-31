@@ -12,7 +12,7 @@ const computeDerivedStates = ({ name, prevState, state, derivedStateSyncers, syn
     let lastPrevState = prevState;
     let updates = [];
 
-    const _setContext = (syncer, name) => (path, value) => {
+    const _setContext = (syncer) => (path, value) => {
         if (syncerStatus.done) {
             console.error(`derived state syncer: "${syncer.name}" should be synchronous. Got asynchronous update for path: "${path}" with the value: ${value}`);
             return;
@@ -39,7 +39,7 @@ const computeDerivedStates = ({ name, prevState, state, derivedStateSyncers, syn
         derivedStateSyncers.forEach((d) => d({
             context: lastCurrentState,
             prevContext: lastPrevState,
-            setContext: _setContext(d, name)
+            setContext: _setContext(d)
         }));
 
         let stateBeforeUpdates = lastCurrentState;
