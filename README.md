@@ -351,6 +351,8 @@ Remember that you can always mix `effects` and `derivedStateSyncers` at the same
 
 ## debug Option
 
-You can debug and trace your state updates by adding to the url the `debugWisteria` query param, or in Storybook by using the decorator (`import withDebugMode from 'react-wisteria/storybook';`), to inspect your stores state last value then they're available in `window.ReactWisteriaStores`
+You can debug and trace your state updates by adding to the url the `debugWisteria` query param, or in Storybook by using the decorator (`import withDebugMode from 'react-wisteria/storybook';`).
 
 ![image](https://user-images.githubusercontent.com/7091543/80594046-f6143380-8a2a-11ea-86ea-222984922cd7.png)
+
+You can inspect your stores state last value by using `window.ReactWisteriaStores`
