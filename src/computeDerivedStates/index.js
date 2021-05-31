@@ -1,24 +1,25 @@
+import isInDebugMode from '../isInDebugMode';
 import traceUpdates from '../traceUpdates';
 import updater from '../updater';
 
 const MAX_INFINITE_CYCLES_COUNT = 100;
 
 export const INFINITE_SET_CONTEXT_IN_SYNCER_ERROR_MSG = `One of your derivedStateSyncers is infinitely calling setContext. Reached Max limit: ${MAX_INFINITE_CYCLES_COUNT}.
-Pass the "debug" option to the Provider in order to see the state updates.`;
+Pass the "debugWisteria" query param to the url or use the storybook decorator in order to see the state updates.`;
 
-const computeDerivedStates = ({ prevState, state, derivedStateSyncers, debug, syncerStatus }) => {
+const computeDerivedStates = ({ name, prevState, state, derivedStateSyncers, syncerStatus }) => {
     let lastCurrentState = state;
     let lastPrevState = prevState;
     let updates = [];
 
-    const _setContext = (syncer) => (path, value) => {
+    const _setContext = (syncer, name) => (path, value) => {
         if (syncerStatus.done) {
             console.error(`derived state syncer: "${syncer.name}" should be synchronous. Got asynchronous update for path: "${path}" with the value: ${value}`);
             return;
         }
 
-        if (debug) {
-            traceUpdates({ path, value });
+        if (isInDebugMode()) {
+            traceUpdates({ name, path, value });
         }
 
         updates.push({ path, value });
@@ -38,7 +39,7 @@ const computeDerivedStates = ({ prevState, state, derivedStateSyncers, debug, sy
         derivedStateSyncers.forEach((d) => d({
             context: lastCurrentState,
             prevContext: lastPrevState,
-            setContext: _setContext(d)
+            setContext: _setContext(d, name)
         }));
 
         let stateBeforeUpdates = lastCurrentState;

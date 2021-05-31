@@ -18,6 +18,5 @@ const Counter = () => {
 
 export default Provider({
     Context: CounterContext,
-    derivedStateSyncers: [blueOnEvenRedInOdd],
-    debug: true
+    derivedStateSyncers: [blueOnEvenRedInOdd]
 })(Counter);

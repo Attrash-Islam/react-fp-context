@@ -30,12 +30,11 @@ npm i react-wisteria@4.1.5 --save
 ## Options
 | **Option** | **Description** | **Default Value** |
 | --- | --- | --- |
-| **name** | A name to be shown in "React Context Devtools" | *''*
+| **name** | A name to be shown for the store when debugging | *Required*
 | **Context** | A React Context as the state container | *Required*
 | **initialPropsMapper?** | A mapper to map the Root Component props to a different state shape | *_.identity*
 | **effects?** | A list of effects | *[]*
 | **derivedStateSyncers?** | A list of derived state syncers | *[]*
-| **debug?** | Debug mode to trace state updates in the console | *false*
 
 ## Important Notice
 
@@ -80,6 +79,7 @@ const Counter = () => {
 };
 
 export default Provider({
+    name: 'My Store',
     Context: CounterContext
 })(Counter);
 ```
@@ -198,6 +198,7 @@ const Counter = () => {
 };
 
 export default Provider({
+    name: 'My Store',
     Context: CounterContext,
     initialPropsMapper: ({ count }) => ({ mystate: { count }})
 })(Counter);
@@ -246,6 +247,7 @@ const Counter = () => {
 };
 
 export default Provider({
+    name: 'My Store',
     Context: CounterContext,
     effects: [useRequestReportOnTen]
 })(Counter);
@@ -337,6 +339,7 @@ const Counter = () => {
 };
 
 export default Provider({
+    name: 'My Store',
     Context: CounterContext,
     derivedStateSyncers: [blueOnEvenRedInOdd]
 })(Counter);
@@ -348,6 +351,6 @@ Remember that you can always mix `effects` and `derivedStateSyncers` at the same
 
 ## debug Option
 
-You can debug and trace your state updates by passing this option as `true`. Once you do you will see logs in the console that will make it easy to track the execution flow.
+You can debug and trace your state updates by adding to the url the `debugWisteria` query param, or in Storybook by using the decorator (`import withDebugMode from 'react-wisteria/storybook';`)
 
 ![image](https://user-images.githubusercontent.com/7091543/80594046-f6143380-8a2a-11ea-86ea-222984922cd7.png)

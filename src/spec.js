@@ -176,39 +176,6 @@ it('should execute effects when get passed on each update', () => {
     expect(fun).toHaveBeenCalledWith({ context: currentContext, setContext: currentSetContext });
 });
 
-describe('debug mode', () => {
-    const args = ['%c react-wisteria::setContext Path "count"', 'color:#1dbf73'];
-
-    it('should not console when debug mode is OFF', () => {
-        const Spec = App({ Context, debug: false });
-        mount(<Spec count={0}/>);
-    
-        act(() => {
-            currentSetContext('count', 4);
-        });
-    
-        expect(console.groupCollapsed).not.toHaveBeenCalledWith(...args);
-        expect(console.log).not.toHaveBeenCalledWith({ value: 4 });
-        expect(console.trace).not.toHaveBeenCalled();
-        expect(console.groupEnd).not.toHaveBeenCalled();
-    });
-    
-    it('should console in debug mode', () => {
-        const Spec = App({ Context, debug: true });
-        mount(<Spec count={0}/>);
-    
-        act(() => {
-            currentSetContext('count', 4);
-        });
-    
-        expect(console.groupCollapsed).toHaveBeenCalledWith(...args);
-        expect(console.log).toHaveBeenCalledWith({ value: 4 });
-        expect(console.trace).toHaveBeenCalled();
-        expect(console.groupEnd).toHaveBeenCalled();
-    });
-});
-
-
 it('should not re-render when connect state slice do not change', () => {
     const ContextInspector = ({ count, setContext }) => {
         currentSetContext = setContext;
