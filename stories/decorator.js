@@ -1,6 +1,5 @@
 import React from 'react';
 import { addDecorator } from '@storybook/react';
-import withDebugMode from '../storybook';
 
 addDecorator((storyFn) => (
     <React.StrictMode>
@@ -8,4 +7,4 @@ addDecorator((storyFn) => (
     </React.StrictMode>
 ));
 
-addDecorator(withDebugMode);
+window.isWisteriaDebugModeForced = true;
