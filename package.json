@@ -1,6 +1,6 @@
 {
   "name": "react-wisteria",
-  "version": "5.0.2-rc1",
+  "version": "5.0.2-rc2",
   "description": "React Functional Context",
   "keywords": [
     "react",
@@ -12,7 +12,7 @@
   "main": "dist/index.js",
   "typings": "index.d.ts",
   "dependencies": {
-    "golden-path": "1.1.4-rc"
+    "golden-path": "1.1.4-rc2"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
