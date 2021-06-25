@@ -15,6 +15,14 @@ const useStateManagement = (initialState, derivedStateSyncers, name) => {
     const [state, setState] = React.useState(initialState);
     const [initState, setInitState] = React.useState(true);
 
+    if (typeof window !== 'undefined') {
+        if (!window.wisteriaRenderCount) {
+            window.wisteriaRenderCount = 0;
+        }
+
+        window.wisteriaRenderCount++;
+    }
+
     const setContext = React.useCallback((path, value) => {
         if (isInDebugMode()) {
             traceUpdates({ name, path, value });
