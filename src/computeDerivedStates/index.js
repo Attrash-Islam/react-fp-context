@@ -1,3 +1,4 @@
+import { get } from 'golden-path';
 import isInDebugMode from '../isInDebugMode';
 import traceUpdates from '../traceUpdates';
 import updater from '../updater';
@@ -36,11 +37,30 @@ const computeDerivedStates = ({ name, prevState, state, derivedStateSyncers, syn
 
         updates = [];
 
-        derivedStateSyncers.forEach((d) => d({
-            context: lastCurrentState,
-            prevContext: lastPrevState,
-            setContext: _setContext(d)
-        }));
+        derivedStateSyncers.forEach((d) => {
+            if (!d.syncerDeps) {
+                d({
+                    context: lastCurrentState,
+                    prevContext: lastPrevState,
+                    setContext: _setContext(d)
+                });
+            } else {
+                const prevSlice = d.syncerDeps.map((k) => get(k, lastPrevState));
+                const currentSlice = d.syncerDeps.map((k) => get(k, lastCurrentState));
+
+                for (let i = 0; i < prevSlice.length; i++) {
+                    if (prevSlice[i] !== currentSlice[i]) {
+                        d({
+                            context: lastCurrentState,
+                            prevContext: lastPrevState,
+                            setContext: _setContext(d)
+                        });
+
+                        break;
+                    }
+                }
+            }
+        });
 
         let stateBeforeUpdates = lastCurrentState;
 

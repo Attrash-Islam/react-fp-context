@@ -128,6 +128,26 @@ it('should derive state value if derivedStateSyncers get passed with one render 
     expect(currentContext).toEqual({ count: 3, color: 'red' });
 });
 
+it('should derive state value if derivedStateSyncers get passed with one render cycle based on "syncerDeps"', () => {
+    const blueColorOnEvenRedOnOdd = ({ context, setContext }) => {
+        setContext('color', context.count % 2 === 0 ? 'blue' : 'red');
+    };
+
+    blueColorOnEvenRedOnOdd.syncerDeps = ['count'];
+
+    const Spec = App({ Context, derivedStateSyncers: [blueColorOnEvenRedOnOdd] });
+    mount(<Spec count={0}/>);
+    expect(renderedTimes).toBe(1);
+    expect(currentContext).toEqual({ count: 0, color: 'blue' });
+
+    act(() => {
+        currentSetContext('count', 3);
+    });
+
+    expect(renderedTimes).toBe(2);
+    expect(currentContext).toEqual({ count: 3, color: 'red' });
+});
+
 it('should throw error if derivedStateSyncers is calling setContext infinitely', () => {
     const infiniteSyncer = ({ context, setContext }) => {
         // We always call setContext without being wrapped in conditions.
