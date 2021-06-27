@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, memo } from 'react';
 import useStateManagement from '../useStateManagement';
 
 export const TreeContext = React.createContext();
@@ -9,7 +9,7 @@ const ContextProvider = ({
     initialPropsMapper = (x) => x,
     derivedStateSyncers = [],
     effects = [],
-}) => (Component) => (props) => {
+}) => (Component) => memo((props) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [context, setContext] = useStateManagement(initialPropsMapper(props), derivedStateSyncers, name);
     effects.forEach((effect) => effect({ context, setContext }));
@@ -27,6 +27,6 @@ const ContextProvider = ({
             </Context.Provider>
         </TreeContext.Provider>
     );
-};
+});
 
 export default ContextProvider;
